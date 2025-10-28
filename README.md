@@ -277,6 +277,55 @@ trivy image astra-landing:latest
 
 ---
 
+## 🧪 Testing
+
+### Unit & Integration Tests
+```bash
+# Run all tests
+pnpm test
+
+# Run with UI
+pnpm test:ui
+
+# Generate coverage report
+pnpm test:coverage
+```
+
+### E2E Tests (Playwright)
+```bash
+# Run E2E tests
+pnpm test:e2e
+
+# Run with UI
+pnpm test:e2e:ui
+
+# Run in headed mode
+pnpm test:e2e:headed
+
+# Debug mode
+pnpm test:e2e:debug
+```
+
+### Visual Regression Tests (Percy)
+```bash
+# Run visual tests
+pnpm test:visual
+
+# Update baselines after intentional changes
+pnpm test:visual:update
+```
+
+**Visual Testing Coverage:**
+- ✅ Feature cards (6 color themes)
+- ✅ All landing page sections
+- ✅ Responsive breakpoints (375px, 768px, 1280px, 1920px)
+- ✅ Cross-browser testing (Chrome, Firefox, Safari)
+- ✅ Hover states and animations
+
+📄 **Full Guide:** [PERCY_SETUP.md](PERCY_SETUP.md)
+
+---
+
 ## 📈 Development Roadmap
 
 ### ✅ Phase 0: Planning (Completed)
