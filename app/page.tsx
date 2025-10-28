@@ -6,6 +6,8 @@ import { TrustBar } from '@/components/landing/trust-bar';
 import { ProblemSection } from '@/components/landing/problem-section';
 import { SolutionSection } from '@/components/landing/solution-section';
 import { FeaturesSection } from '@/components/landing/features-section';
+import { ResultsSection } from '@/components/landing/results-section';
+import { UseCasesSection } from '@/components/landing/use-cases-section';
 import { TestimonialsSection } from '@/components/landing/testimonials-section';
 import { PricingSection } from '@/components/landing/pricing-section';
 import { FAQSection } from '@/components/landing/faq-section';
@@ -86,6 +88,12 @@ export default function HomePage() {
 
         {/* Key Features */}
         <FeaturesSection />
+
+        {/* Results & Metrics */}
+        <ResultsSection />
+
+        {/* Use Cases */}
+        <UseCasesSection />
 
         {/* Testimonials */}
         <TestimonialsSection />
