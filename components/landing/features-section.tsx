@@ -76,7 +76,9 @@ const FeatureCard: FC<FeatureCardProps> = ({
         transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: 'spring' }}
         className={`mb-6 flex h-20 w-20 items-center justify-center rounded-lg ${colors.iconBg}`}
       >
-        <div className={colors.text}>{icon}</div>
+        <div className={colors.text} aria-hidden="true">
+          {icon}
+        </div>
       </motion.div>
 
       {/* Title */}
@@ -96,16 +98,16 @@ const FeatureCard: FC<FeatureCardProps> = ({
   );
 };
 
-export const FeaturesSection: FC = () => {
-  const featureIcons = [
-    <Target key="target" className="h-12 w-12" />,
-    <Grid3x3 key="grid" className="h-12 w-12" />,
-    <Users key="users" className="h-12 w-12" />,
-    <Calendar key="calendar" className="h-12 w-12" />,
-    <Star key="star" className="h-12 w-12" />,
-    <Brain key="brain" className="h-12 w-12" />,
-  ];
+const FEATURE_ICONS = [
+  <Target key="target" className="h-12 w-12" />,
+  <Grid3x3 key="grid" className="h-12 w-12" />,
+  <Users key="users" className="h-12 w-12" />,
+  <Calendar key="calendar" className="h-12 w-12" />,
+  <Star key="star" className="h-12 w-12" />,
+  <Brain key="brain" className="h-12 w-12" />,
+] as const;
 
+export const FeaturesSection: FC = () => {
   return (
     <section
       id="features"
@@ -142,7 +144,7 @@ export const FeaturesSection: FC = () => {
           {FEATURES.map((feature, index) => (
             <FeatureCard
               key={feature.id}
-              icon={featureIcons[index]}
+              icon={FEATURE_ICONS[index]}
               title={feature.title}
               description={feature.description}
               example={feature.example}

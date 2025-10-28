@@ -171,6 +171,110 @@ test.describe('Astra Landing Page', () => {
     });
   });
 
+  test.describe('Features Section', () => {
+    test('should display features section with 6 analysis methods', async ({ page }) => {
+      const featuresSection = page.locator('section#features');
+      await expect(featuresSection).toBeVisible();
+
+      // Check section heading
+      const heading = featuresSection.locator('#features-heading');
+      await expect(heading).toBeVisible();
+      await expect(heading).toContainText('6 Методов Анализа в Один Клик');
+
+      // Check subtitle
+      const subtitle = featuresSection.locator('p.text-xl');
+      await expect(subtitle).toBeVisible();
+      await expect(subtitle).toContainText('Комплексный анализ');
+
+      // Check 6 feature cards
+      const featureCards = featuresSection.locator('.grid > div');
+      await expect(featureCards).toHaveCount(6);
+    });
+
+    test('should display feature cards with complete content', async ({ page }) => {
+      const featuresSection = page.locator('section#features');
+      await featuresSection.scrollIntoViewIfNeeded();
+
+      const firstCard = featuresSection.locator('.grid > div').first();
+
+      // Check icon container is visible
+      const iconContainer = firstCard.locator('.rounded-lg').first();
+      await expect(iconContainer).toBeVisible();
+
+      // Check title is visible
+      const title = firstCard.locator('h3');
+      await expect(title).toBeVisible();
+      await expect(title).toHaveClass(/font-bold/);
+
+      // Check description is visible
+      const description = firstCard.locator('p.text-slate-600').first();
+      await expect(description).toBeVisible();
+
+      // Check example section is visible
+      const example = firstCard.locator('p.text-sm');
+      await expect(example).toBeVisible();
+      await expect(example).toContainText('Пример:');
+    });
+
+    test('should have color-coded themes for each feature', async ({ page }) => {
+      const featuresSection = page.locator('section#features');
+      await featuresSection.scrollIntoViewIfNeeded();
+
+      const featureCards = featuresSection.locator('.grid > div');
+
+      // Check that different cards have different color classes
+      const firstCardExample = featureCards.nth(0).locator('.rounded-lg').nth(1);
+      const secondCardExample = featureCards.nth(1).locator('.rounded-lg').nth(1);
+
+      // Both should have color-specific backgrounds
+      await expect(firstCardExample).toHaveClass(/bg-(green|blue|purple|orange|teal|indigo)-50/);
+      await expect(secondCardExample).toHaveClass(/bg-(green|blue|purple|orange|teal|indigo)-50/);
+    });
+
+    test('should animate feature cards on scroll', async ({ page }) => {
+      const featuresSection = page.locator('section#features');
+
+      // Scroll to section
+      await featuresSection.scrollIntoViewIfNeeded();
+
+      // Wait for animations
+      await page.waitForTimeout(1500);
+
+      // All 6 cards should be visible after animation
+      const featureCards = featuresSection.locator('.grid > div');
+      for (let i = 0; i < 6; i++) {
+        await expect(featureCards.nth(i)).toBeVisible();
+      }
+    });
+
+    test('should have hover effects on feature cards', async ({ page }) => {
+      const featuresSection = page.locator('section#features');
+      await featuresSection.scrollIntoViewIfNeeded();
+
+      const firstCard = featuresSection.locator('.grid > div').first();
+
+      // Check hover class is present
+      await expect(firstCard).toHaveClass(/hover:shadow-xl/);
+    });
+
+    test('should be responsive on mobile', async ({ page }) => {
+      // Set mobile viewport
+      await page.setViewportSize({ width: 375, height: 667 });
+
+      const featuresSection = page.locator('section#features');
+      await featuresSection.scrollIntoViewIfNeeded();
+      await expect(featuresSection).toBeVisible();
+
+      // Check grid changes to single column on mobile
+      const grid = featuresSection.locator('.grid');
+      await expect(grid).toHaveClass(/grid-cols-1/);
+
+      // All cards should still be visible
+      const featureCards = featuresSection.locator('.grid > div');
+      await expect(featureCards).toHaveCount(6);
+    });
+  });
+
   test('should display footer', async ({ page }) => {
     const footer = page.locator('footer');
     await expect(footer).toBeVisible();
