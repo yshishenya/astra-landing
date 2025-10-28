@@ -1,18 +1,28 @@
+'use client';
+
 import { type FC } from 'react';
+import { motion } from 'framer-motion';
 import { CheckCircle, Star, Users } from 'lucide-react';
 import { STATS } from '@/lib/constants';
 
 interface TrustStatProps {
   icon: React.ReactNode;
   text: string;
+  index: number;
 }
 
-const TrustStat: FC<TrustStatProps> = ({ icon, text }) => {
+const TrustStat: FC<TrustStatProps> = ({ icon, text, index }) => {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="flex items-center justify-center gap-2"
+    >
       <div className="text-primary">{icon}</div>
       <span className="text-sm font-medium text-slate-700 md:text-base">{text}</span>
-    </div>
+    </motion.div>
   );
 };
 
@@ -41,20 +51,24 @@ export const TrustBar: FC = () => {
       className="border-y border-slate-200 bg-white py-12"
     >
       <div className="container-custom">
-        <p
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.5 }}
           id="trust-bar-heading"
           className="mb-8 text-center text-sm uppercase tracking-wide text-slate-500"
         >
           Доверяют лидеры российского бизнеса
-        </p>
+        </motion.p>
 
         {/* Trust Stats */}
         <div
           role="list"
           className="flex flex-col items-center justify-center gap-6 text-center md:flex-row md:gap-8 lg:gap-12"
         >
-          {trustStats.map((stat) => (
-            <TrustStat key={stat.id} icon={stat.icon} text={stat.text} />
+          {trustStats.map((stat, index) => (
+            <TrustStat key={stat.id} icon={stat.icon} text={stat.text} index={index} />
           ))}
         </div>
       </div>

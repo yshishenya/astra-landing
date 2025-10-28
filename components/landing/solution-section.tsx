@@ -1,5 +1,8 @@
+'use client';
+
 import { type FC } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Upload, Brain, FileText, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SOLUTION_STEPS } from '@/lib/constants';
@@ -13,29 +16,48 @@ interface StepCardProps {
 
 const StepCard: FC<StepCardProps> = ({ number, icon, title, description }) => {
   return (
-    <div className="relative" role="listitem">
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.6, delay: (number - 1) * 0.15 }}
+      whileHover={{ scale: 1.02 }}
+      className="relative"
+      role="listitem"
+    >
       <div className="flex items-start gap-6">
         {/* Number Badge */}
-        <div
+        <motion.div
+          initial={{ scale: 0, rotate: -180 }}
+          whileInView={{ scale: 1, rotate: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: (number - 1) * 0.15 + 0.2, type: 'spring' }}
           className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary/10"
           aria-label={`Шаг ${number}`}
         >
           <span className="text-2xl font-bold text-primary">{number}</span>
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="flex-1">
           <div className="mb-3 flex items-center gap-3">
-            <div className="text-primary" aria-hidden="true">
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: (number - 1) * 0.15 + 0.3 }}
+              className="text-primary"
+              aria-hidden="true"
+            >
               {icon}
-            </div>
+            </motion.div>
             <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
           </div>
 
           <p className="leading-relaxed text-slate-600">{description}</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -52,12 +74,25 @@ export const SolutionSection: FC = () => {
       <div className="container-custom">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <h2 id="solution-heading" className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6 }}
+            id="solution-heading"
+            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+          >
             Как Астра Выявляет Потенциал
-          </h2>
-          <p className="mx-auto max-w-3xl text-xl text-slate-600">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mx-auto max-w-3xl text-xl text-slate-600"
+          >
             Четыре простых шага от загрузки резюме до готового плана развития
-          </p>
+          </motion.p>
         </div>
 
         {/* Steps Grid */}
