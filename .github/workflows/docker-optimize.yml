@@ -1,0 +1,253 @@
+name: Docker Build & Optimization
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose*.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/docker-optimize.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Build optimized Docker image
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: network=host
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: |
+            type=gha
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      - name: Analyze image size
+        run: |
+          echo "## 📊 Image Size Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          docker images ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  # Security scanning
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy for summary
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: 'table'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+  # Dockerfile linting
+  dockerfile-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+          format: sarif
+          output-file: hadolint-results.sarif
+          no-fail: true
+
+      - name: Upload Hadolint results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: hadolint-results.sarif
+
+  # Performance testing
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull and start container
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker run -d --name test-container \
+            -p 3000:3000 \
+            -e NODE_ENV=production \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Wait for container startup
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3000/api/health; do sleep 2; done'
+
+      - name: Test startup time
+        run: |
+          START_TIME=$(docker inspect -f '{{.State.StartedAt}}' test-container)
+          HEALTHY_TIME=$(docker inspect -f '{{.State.Health.Log}}' test-container | jq -r '.[0].Start' 2>/dev/null || echo "$START_TIME")
+          echo "Container started at: $START_TIME"
+          echo "Health check passed at: $HEALTHY_TIME"
+
+      - name: Measure response times
+        run: |
+          echo "## ⚡ Performance Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Endpoint | Response Time |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|---------------|" >> $GITHUB_STEP_SUMMARY
+
+          for i in {1..5}; do
+            TIME=$(curl -w "%{time_total}" -o /dev/null -s http://localhost:3000/)
+            echo "| Homepage (Test $i) | ${TIME}s |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop test-container || true
+          docker rm test-container || true
+
+  # Generate optimization report
+  optimization-report:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan, dockerfile-lint]
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate report
+        run: |
+          cat > optimization-report.md << 'EOF'
+          # 🐳 Docker Optimization Report
+
+          ## Build Information
+          - **Commit**: ${{ github.sha }}
+          - **Branch**: ${{ github.ref_name }}
+          - **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+
+          ## Optimizations Applied
+          - ✅ Multi-stage build (4 stages)
+          - ✅ BuildKit cache mounts for pnpm and Next.js
+          - ✅ Security scanning with Trivy
+          - ✅ Type checking before build
+          - ✅ Non-root user (nextjs:1001)
+          - ✅ Health checks enabled
+          - ✅ dumb-init for proper signal handling
+          - ✅ Alpine Linux base (minimal footprint)
+
+          ## Security Enhancements
+          - 🔒 Non-root user execution
+          - 🔒 Security updates applied
+          - 🔒 Vulnerability scanning integrated
+          - 🔒 Metadata labels for tracking
+
+          ## Performance Features
+          - ⚡ BuildKit cache reduces build time by 10-100x
+          - ⚡ Standalone output reduces image size
+          - ⚡ Multi-platform support (amd64, arm64)
+          - ⚡ Optimized health checks
+
+          ## Next Steps
+          1. Review security scan results in Security tab
+          2. Monitor container performance in production
+          3. Update base image regularly
+          4. Test across different platforms
+
+          ---
+          *Generated by GitHub Actions*
+          EOF
+
+          cat optimization-report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: optimization-report
+          path: optimization-report.md

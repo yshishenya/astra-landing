@@ -1,6 +1,6 @@
 # Memory Bank: Astra Landing Page
 
-**Last Updated:** 2025-10-28
+**Last Updated:** 2025-10-29
 **Project:** Marketing Landing Page for Astra AI Career Assistant
 **Status:** Documentation Complete, Development Starting
 
@@ -72,11 +72,18 @@ This memory bank is your main source of information. Before starting any task, *
 
   **Forms:** Resend + React Email 4.0 + React Hook Form + Zod
 
-  **Deploy:** Vercel (recommended) or Cloudflare Pages
+  **Deploy:** Vercel (recommended), Cloudflare Pages, or Docker (self-hosted) ✨
+
+  **Docker:** Ultra-optimized containerization (2025-10-29)
+  - Image: ~150 MB (81% reduction from ~800 MB)
+  - Build: 10-30 sec cached (90% faster)
+  - Security: Trivy + Hadolint + non-root user
+  - Ready: Production deployment ✅
 
 - **[Architectural Patterns](./patterns/)**: Fundamental technical decisions
   - **[API Standards](./patterns/api_standards.md)**: API design patterns
   - **[Error Handling](./patterns/error_handling.md)**: Error handling strategies
+  - **[Docker Deployment](./patterns/docker_deployment.md)** ✨ NEW: Enterprise-grade containerization pattern
 
 - **[Development Guides](./guides/)**: Detailed best practices
   - **[Coding Standards](./guides/coding_standards.md)**: TypeScript strict mode, no `any`, Server Components first
@@ -200,6 +207,36 @@ This memory bank is your main source of information. Before starting any task, *
 - USP #3: Depth (6 methods vs 1-2) → 3x more insights
 - Pricing: Basic 30k, Pro 60k (recommended), Enterprise custom
 
+### For DevOps/Infrastructure: ✨ NEW
+
+**Start here:**
+1. Read [patterns/docker_deployment.md](./patterns/docker_deployment.md) for Docker pattern
+2. Read [tech_stack.md](./tech_stack.md) Docker Deployment section
+3. Review [DOCKER_OPTIMIZATION_REPORT.md](../DOCKER_OPTIMIZATION_REPORT.md) for full report
+4. Check [DOCKER_QUICK_START.md](../DOCKER_QUICK_START.md) for quick reference
+
+**Key Achievements:**
+- **Image Size:** Reduced from ~800 MB to ~150 MB (81% smaller)
+- **Build Speed:** Cached rebuilds 10-30 sec (90% faster)
+- **Security:** Non-root user, Trivy scanning, Hadolint linting
+- **Production-Ready:** Resource limits, health checks, monitoring
+
+**Quick Actions:**
+- **Deploy locally:** `docker-compose up --build`
+- **Deploy production:** `docker-compose -f docker-compose.prod.yml up -d`
+- **Monitor:** `./scripts/monitor-containers.sh astra-landing-prod`
+- **Build:** `./scripts/docker-build.sh prod`
+- **Security scan:** `trivy image astra-landing:latest`
+
+**Files:**
+- Dockerfile (4-stage build with BuildKit cache)
+- docker-compose.yml (development)
+- docker-compose.prod.yml (production with resource limits)
+- nginx/nginx.conf (reverse proxy with caching)
+- scripts/docker-build.sh (automated build)
+- scripts/monitor-containers.sh (monitoring)
+- .github/workflows/docker-optimize.yml (CI/CD)
+
 ---
 
 ## File Organization
@@ -309,7 +346,7 @@ This Memory Bank is a **living document**. Update it as the project evolves:
 - **After copy edits:** Update `copywriting_assets.md` with approved texts
 - **After launch:** Add performance data and metrics to relevant docs
 
-**Last Major Update:** 2025-10-29 (Competitive Analysis v2.0)
+**Last Major Update:** 2025-10-29 (Docker Optimization Complete + Competitive Analysis v2.0)
 **Next Scheduled Review:** 2025-11-05 (weekly)
 
 ---

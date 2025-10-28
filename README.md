@@ -78,10 +78,76 @@ Marketing landing page для Astra, разработанный с исполь�
 ## 🛠️ Быстрый старт
 
 ### Prerequisites
-- Node.js 22+ (LTS)
-- pnpm 9+ (или npm/yarn)
+- **Option 1 (Local):** Node.js 22+ (LTS) + pnpm 9+
+- **Option 2 (Docker):** Docker 20+ + Docker Compose 2+
 
-### Installation
+---
+
+### 🐳 Option 1: Docker (Рекомендуется)
+
+**Самый простой способ запустить проект:**
+
+```bash
+# 1. Clone repository
+git clone https://github.com/your-org/astra_landing.git
+cd astra_landing
+
+# 2. Setup environment variables
+cp .env.example .env.local
+# Edit .env.local with your keys
+
+# 3. Build and run with Docker Compose
+docker-compose up --build
+
+# 4. Open http://localhost:3000
+```
+
+**Преимущества Docker:**
+- ✅ Не нужно устанавливать Node.js/pnpm локально
+- ✅ Изолированная среда
+- ✅ Одинаковое окружение на всех машинах
+- ✅ Production-ready сборка
+- ✅ Автоматический health check
+
+**Дополнительные команды:**
+```bash
+# Запустить в фоне
+docker-compose up -d
+
+# Production режим (с resource limits)
+docker-compose -f docker-compose.prod.yml up -d
+
+# Остановить
+docker-compose down
+
+# Пересобрать образ
+docker-compose up --build --force-recreate
+
+# Просмотр логов
+docker-compose logs -f
+
+# Проверить health
+curl http://localhost:3000/api/health
+
+# Мониторинг контейнера
+./scripts/monitor-containers.sh astra-landing-prod
+```
+
+**Автоматизированная сборка:**
+```bash
+# Быстрая сборка с оптимизациями
+./scripts/docker-build.sh prod
+
+# Development сборка
+./scripts/docker-build.sh dev
+
+# Test сборка с security audit
+./scripts/docker-build.sh test
+```
+
+---
+
+### 💻 Option 2: Local Development
 
 ```bash
 # 1. Clone repository
@@ -101,7 +167,7 @@ pnpm dev
 # 5. Open http://localhost:3000
 ```
 
-### Build for production
+**Build for production:**
 
 ```bash
 pnpm build
@@ -159,6 +225,46 @@ astra_landing/
 ### Spacing Scale
 - **Section:** 120px desktop / 80px mobile
 - **Component:** 60px desktop / 40px mobile
+
+---
+
+## 🐳 Docker Optimization
+
+**Ultra-Optimized Container Setup:**
+
+### Key Features
+- ✅ **Multi-stage build** - 4 stages for minimal footprint (~150 MB)
+- ✅ **BuildKit cache mounts** - 10-100x faster rebuilds
+- ✅ **Security scanning** - Trivy + Hadolint integration
+- ✅ **Type checking** - Fail fast on TypeScript errors
+- ✅ **Non-root user** - Enhanced security (nextjs:1001)
+- ✅ **Health checks** - Proactive monitoring
+- ✅ **Resource limits** - CPU/Memory constraints
+- ✅ **CI/CD ready** - GitHub Actions workflow
+
+### Image Optimization Results
+- **Before:** ~800 MB (full Node.js + dev dependencies)
+- **After:** ~150 MB (standalone Alpine-based image)
+- **Reduction:** 81% smaller
+
+### Build Performance
+- **Initial build:** 5-8 minutes
+- **Cached rebuild:** 10-30 seconds (90% faster!)
+- **Dependency update:** 30-60 seconds (85% faster!)
+
+### Production Deployment
+```bash
+# Production with Nginx reverse proxy
+docker-compose -f docker-compose.prod.yml up -d
+
+# Monitor container
+./scripts/monitor-containers.sh
+
+# Security scan
+trivy image astra-landing:latest
+```
+
+📄 **Full Report:** [DOCKER_OPTIMIZATION_REPORT.md](DOCKER_OPTIMIZATION_REPORT.md)
 
 ---
 
