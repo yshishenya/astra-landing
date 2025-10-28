@@ -94,6 +94,9 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Renders the root layout of the application with children components.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
