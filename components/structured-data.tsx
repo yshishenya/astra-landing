@@ -64,7 +64,7 @@ export const StructuredData: FC = () => {
     aggregateRating: {
       '@type': 'AggregateRating',
       ratingValue: '4.9',
-      reviewCount: parseInt(STATS.happyUsers.replace(/[^\d]/g, ''), 10),
+      reviewCount: parseInt(STATS.companies.replace(/[^\d]/g, ''), 10),
     },
     additionalProperty: [
       {
@@ -75,7 +75,7 @@ export const StructuredData: FC = () => {
       {
         '@type': 'PropertyValue',
         name: 'Accuracy Rate',
-        value: STATS.accuracy,
+        value: STATS.quality,
       },
     ],
   };
