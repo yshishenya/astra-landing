@@ -6,6 +6,11 @@ import { TrustBar } from '@/components/landing/trust-bar';
 import { ProblemSection } from '@/components/landing/problem-section';
 import { SolutionSection } from '@/components/landing/solution-section';
 import { FeaturesSection } from '@/components/landing/features-section';
+import { TestimonialsSection } from '@/components/landing/testimonials-section';
+import { PricingSection } from '@/components/landing/pricing-section';
+import { FAQSection } from '@/components/landing/faq-section';
+import { FinalCTASection } from '@/components/landing/final-cta-section';
+import { StructuredData } from '@/components/structured-data';
 import { HERO_HEADLINES, CTA_BUTTONS, STATS } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -17,6 +22,9 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      {/* Structured Data for SEO */}
+      <StructuredData />
+
       <Header />
       <main className="min-h-screen pt-20">
         {/* Hero Section */}
@@ -79,7 +87,17 @@ export default function HomePage() {
         {/* Key Features */}
         <FeaturesSection />
 
-        {/* Other sections will be added progressively */}
+        {/* Testimonials */}
+        <TestimonialsSection />
+
+        {/* Pricing */}
+        <PricingSection />
+
+        {/* FAQ */}
+        <FAQSection />
+
+        {/* Final CTA */}
+        <FinalCTASection />
       </main>
       <Footer />
     </>

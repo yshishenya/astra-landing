@@ -1,0 +1,51 @@
+version: 2
+# Percy Configuration for Visual Regression Testing
+
+static:
+  # Static build assets for faster snapshots
+  cleanUrls: true
+
+snapshot:
+  # Default widths for all snapshots
+  widths:
+    - 375  # Mobile
+    - 768  # Tablet
+    - 1280 # Desktop
+    - 1920 # Wide Desktop
+
+  # Minimum height for snapshots
+  minHeight: 1024
+
+  # Percy-specific CSS to prevent flakiness
+  percyCSS: |
+    /* Hide dynamic content that changes between runs */
+    [data-testid="timestamp"],
+    .timestamp {
+      visibility: hidden !important;
+    }
+
+    /* Disable all animations for consistent snapshots */
+    *, *::before, *::after {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+      transition-duration: 0s !important;
+      transition-delay: 0s !important;
+    }
+
+discovery:
+  # Network idle timeout
+  networkIdleTimeout: 750
+
+  # Allowed hostnames for requests
+  allowedHostnames:
+    - localhost
+    - 127.0.0.1
+
+# Agent configuration
+agent:
+  assetDiscovery:
+    # Include all assets
+    allowedHostnames:
+      - localhost
+      - 127.0.0.1
+    networkIdleTimeout: 750

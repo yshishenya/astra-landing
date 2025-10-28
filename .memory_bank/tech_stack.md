@@ -367,8 +367,9 @@ astra_landing/
 
 ```env
 # Site Configuration
-NEXT_PUBLIC_SITE_URL=https://astra.ai
+NEXT_PUBLIC_APP_URL=https://astra.ai
 NEXT_PUBLIC_SITE_NAME="Astra"
+NEXT_PUBLIC_CONTACT_EMAIL=contact@astra.ai
 
 # Email (Resend)
 RESEND_API_KEY=re_xxxxxxxxxxxxx
@@ -377,6 +378,9 @@ RESEND_FROM_EMAIL=noreply@astra.ai
 # Analytics
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 NEXT_PUBLIC_PLAUSIBLE_DOMAIN=astra.ai
+
+# Visual Regression Testing (Percy)
+PERCY_TOKEN=your_percy_token_here
 
 # Optional
 NEXT_PUBLIC_HOTJAR_ID=xxxxx
@@ -422,14 +426,25 @@ NEXT_PUBLIC_HOTJAR_ID=xxxxx
   },
 
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/node": "^22.10.1",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
 
-    "eslint": "^8.0.0",
+    // Testing
+    "@playwright/test": "^1.56.1",
+    "@percy/cli": "^1.31.4",
+    "@percy/playwright": "^1.0.9",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "vitest": "^4.0.4",
+
+    // Code Quality
+    "eslint": "^9.17.0",
     "eslint-config-next": "^15.0.0",
-    "prettier": "^3.0.0",
-    "prettier-plugin-tailwindcss": "^0.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.10",
 
     "husky": "^8.0.0",
     "lint-staged": "^15.0.0"
@@ -796,6 +811,72 @@ export const HeroSection: FC<HeroSectionProps> = ({
 
 ---
 
+## SEO & Structured Data (Implemented) ✅
+
+### Schema.org JSON-LD
+- **Next.js Script Component** - Inject JSON-LD structured data
+- **Schema Types Implemented:**
+  - `Organization` - Company information, contact details
+  - `WebSite` - Site metadata, search action
+  - `Product` - Astra AI Career Analysis service
+  - `ItemList` - 6 analysis methods from Features section
+  - `WebPage` - Page-level metadata
+
+**Why Structured Data:**
+- Enhanced search results (rich snippets)
+- Knowledge Graph eligibility
+- Voice search optimization
+- Better crawlability by search engines
+- Trust signals for Google
+
+**Implementation:**
+```tsx
+// components/structured-data.tsx
+import Script from 'next/script';
+
+export const StructuredData: FC = () => {
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Astra',
+    description: 'AI-powered career counseling assistant',
+    // ...
+  };
+
+  return (
+    <Script
+      id="schema-organization"
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(organizationSchema),
+      }}
+    />
+  );
+};
+```
+
+**Structured Data Coverage:**
+- ✅ Organization with contact info and logo
+- ✅ WebSite with search action
+- ✅ Product with aggregate rating (4.9 stars)
+- ✅ ItemList for 6 analysis methods
+- ✅ WebPage with service type
+- ✅ Uses data from `lib/constants.ts` (FEATURES, STATS)
+
+**Validation:**
+1. Google Rich Results Test: https://search.google.com/test/rich-results
+2. Schema Markup Validator: https://validator.schema.org
+3. JSON-LD Playground: https://json-ld.org/playground
+
+**SEO Benefits:**
+- Rich snippets in search results
+- Star ratings display (4.9/5)
+- "6 Methods" visible in search
+- Organization Knowledge Panel
+- FAQ rich results (if FAQ schema added)
+
+---
+
 ## Testing Strategy
 
 ### Unit Tests (Optional for landing page)
@@ -837,9 +918,49 @@ pnpm test:e2e:report   # View test report
 - ARIA labels and accessibility
 - Scroll-triggered animations
 
-### Visual Regression (Optional)
-- **Chromatic** (Storybook integration)
-- Catch visual bugs
+### Visual Regression Testing (Implemented) ✅
+- **Percy 1.31.4** with Playwright integration
+- **@percy/playwright 1.0.9** - Percy adapter for Playwright tests
+- Automated visual snapshots across browsers and viewports
+- Catch unintended visual changes (colors, layouts, animations)
+
+**Why Percy:**
+- Integrates with existing Playwright E2E tests
+- 5,000 snapshots/month free tier
+- Multi-browser visual testing (Chrome, Firefox, Safari)
+- Responsive viewport testing (375px, 768px, 1280px, 1920px)
+- Animation state capture (before/after)
+- Hover state testing
+
+**Test Scripts:**
+```bash
+pnpm test:visual          # Run visual regression tests with Percy
+pnpm test:visual:update   # Update visual baselines
+```
+
+**Visual Test Coverage:**
+- Features Section color themes (6 cards: green, blue, purple, orange, teal, indigo)
+- Individual feature card snapshots with hover states
+- Hero Section across all viewports
+- Trust Bar
+- Problem Section
+- Solution Section
+- Complete landing page
+- Responsive design (mobile, tablet, desktop, wide desktop)
+- Animation states (before/after scroll triggers)
+
+**Configuration:**
+- `.percy.yml` - Percy configuration (widths, percyCSS, network settings)
+- `e2e/visual-regression.spec.ts` - Visual test suite
+- `PERCY_SETUP.md` - Complete setup guide
+
+**Setup:**
+1. Create Percy account at https://percy.io
+2. Add `PERCY_TOKEN` to `.env.local`
+3. Run `pnpm test:visual`
+4. Review diffs in Percy dashboard
+
+**Monthly Usage:** ~15 snapshots/test × 20 runs = 300 snapshots/month (6% of free tier)
 
 ---
 
@@ -926,6 +1047,12 @@ refactor: extract hero content to separate file
 
 ---
 
-**Last Updated:** 2025-10-28
-**Stack Version:** Next.js 15 + React 19 + TypeScript 5 + Tailwind v4
+**Last Updated:** 2025-10-29
+**Stack Version:** Next.js 15 + React 19 + TypeScript 5 + Tailwind v3
 **Target Launch:** 6 weeks from start
+
+**Recent Additions:**
+- Percy Visual Regression Testing (2025-10-29)
+- Schema.org Structured Data (2025-10-29)
+- Playwright E2E Tests (2025-10-28)
+- Framer Motion Animations (2025-10-28)
