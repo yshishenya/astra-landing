@@ -5,6 +5,7 @@ import { Footer } from '@/components/landing/footer';
 import { TrustBar } from '@/components/landing/trust-bar';
 import { ProblemSection } from '@/components/landing/problem-section';
 import { SolutionSection } from '@/components/landing/solution-section';
+import { FeaturesSection } from '@/components/landing/features-section';
 import { HERO_HEADLINES, CTA_BUTTONS, STATS } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -74,6 +75,9 @@ export default function HomePage() {
 
         {/* Solution Overview */}
         <SolutionSection />
+
+        {/* Key Features */}
+        <FeaturesSection />
 
         {/* Other sections will be added progressively */}
       </main>

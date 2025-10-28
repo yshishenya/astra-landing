@@ -21,6 +21,7 @@
 - [x] [COMP-04] Trust Bar с статистикой компаний ✅
 - [x] [COMP-05] Problem Statement (3 боли) ✅
 - [x] [FEAT-01] Solution Overview (4 шага "Как это работает") ✅
+- [x] [FEAT-02] Key Features (6 методов анализа) ✅
 
 ### Docker Optimization & DevOps (2025-10-29) ✨
 
@@ -98,19 +99,6 @@
 ## 📋 To Do - Phase 2: Features (Week 3-4)
 
 ### Feature Sections
-
-- [ ] [FEAT-02] Key Features (6 методов, Bento Grid)
-  - Bento Grid layout (асимметричная сетка)
-  - 6 Feature Cards:
-    1. Карьерные инсайты (суперсилы + пути)
-    2. SWOT-анализ
-    3. Holland Personality (RIASEC)
-    4. ИПР (план на 30/90/180/365 дней)
-    5. Soft Skills Assessment
-    6. Психометрический профиль
-  - Glassmorphism effect, hover animations
-  - Icons: 3D-style, colorful
-  - Descriptions: 1-2 предложения
 
 - [ ] [FEAT-03] Results & Metrics (анимированные счетчики)
   - 6 Metric Cards:
