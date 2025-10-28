@@ -5,8 +5,6 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  /* Ignore visual regression tests by default (run only with pnpm test:visual) */
-  testIgnore: process.env.PERCY_TOKEN ? [] : ['**/visual-regression.spec.ts'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

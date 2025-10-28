@@ -40,12 +40,3 @@ discovery:
   allowedHostnames:
     - localhost
     - 127.0.0.1
-
-# Agent configuration
-agent:
-  assetDiscovery:
-    # Include all assets
-    allowedHostnames:
-      - localhost
-      - 127.0.0.1
-    networkIdleTimeout: 750
