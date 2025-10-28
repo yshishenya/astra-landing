@@ -112,6 +112,21 @@ declare global {
 // ============================================================================
 
 /**
+ * Rate limiting state
+ */
+let eventQueue: { timestamp: number; eventName: string }[] = [];
+const MAX_EVENTS_PER_SECOND = 10;
+const RATE_LIMIT_WINDOW = 1000; // 1 second
+
+/**
+ * Clear rate limiting queue (for testing purposes)
+ * @internal
+ */
+export const clearRateLimitQueue = (): void => {
+  eventQueue = [];
+};
+
+/**
  * Check if analytics is enabled (based on environment variables)
  */
 export const isAnalyticsEnabled = (provider: AnalyticsProvider): boolean => {
@@ -137,6 +152,43 @@ export const isAnalyticsEnabled = (provider: AnalyticsProvider): boolean => {
  */
 export const isDevelopment = (): boolean => {
   return process.env.NODE_ENV === 'development';
+};
+
+/**
+ * Log analytics errors to console (development) or silently fail (production)
+ */
+const logAnalyticsError = (provider: string, error: unknown, context?: string): void => {
+  if (isDevelopment()) {
+    console.error(`[${provider}] Error${context ? ` ${context}` : ''}:`, error);
+  }
+  // In production, silently fail to avoid console pollution
+  // Future: Send to error tracking service (Sentry, etc.)
+};
+
+/**
+ * Check if event should be rate limited
+ */
+const isRateLimited = (eventName: string): boolean => {
+  const now = Date.now();
+
+  // Remove old events from queue (older than 1 second)
+  while (eventQueue.length > 0 && eventQueue[0] && now - eventQueue[0].timestamp > RATE_LIMIT_WINDOW) {
+    eventQueue.shift();
+  }
+
+  // Check if we've exceeded the rate limit
+  if (eventQueue.length >= MAX_EVENTS_PER_SECOND) {
+    if (isDevelopment()) {
+      console.warn(
+        `[Analytics] Rate limit exceeded: ${eventQueue.length} events in last second. Event "${eventName}" dropped.`
+      );
+    }
+    return true;
+  }
+
+  // Add current event to queue
+  eventQueue.push({ timestamp: now, eventName });
+  return false;
 };
 
 /**
@@ -175,6 +227,11 @@ export const trackEvent = (
   properties: EventProperties = {},
   category: EventCategory = 'engagement'
 ): void => {
+  // Check rate limiting first
+  if (isRateLimited(eventName)) {
+    return; // Drop event if rate limited
+  }
+
   const sanitizedProps = sanitizeProperties({
     ...properties,
     event_category: category,
@@ -191,7 +248,7 @@ export const trackEvent = (
     try {
       window.gtag('event', eventName, sanitizedProps);
     } catch (error) {
-      console.error('[GA4] Error tracking event:', error);
+      logAnalyticsError('GA4', error, 'tracking event');
     }
   }
 
@@ -200,7 +257,7 @@ export const trackEvent = (
     try {
       window.plausible(eventName, { props: sanitizedProps });
     } catch (error) {
-      console.error('[Plausible] Error tracking event:', error);
+      logAnalyticsError('Plausible', error, 'tracking event');
     }
   }
 };

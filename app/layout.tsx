@@ -56,11 +56,11 @@ export const metadata: Metadata = {
       'Выявить потенциал сотрудника за 90 секунд. 6 методов анализа: карьерные инсайты, SWOT, Holland, ИПР, Soft Skills, психометрия. 99.9% качество, 162x ROI. Снизьте текучку на 5-10%.',
     images: [
       {
-        url: '/og-image.svg',
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'Astra - AI-карьерный консультант для удержания сотрудников',
-        type: 'image/svg+xml',
+        type: 'image/png',
       },
     ],
   },
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     title: 'Astra - AI-карьерный консультант для удержания сотрудников',
     description:
       'Выявить потенциал сотрудника за 90 секунд. 6 методов анализа. 99.9% качество, 162x ROI.',
-    images: ['/og-image.svg'], // TODO: Replace with PNG (1200x630px) for better social media support
+    images: ['/og-image.png'],
     creator: '@astra',
     site: '@astra',
   },
