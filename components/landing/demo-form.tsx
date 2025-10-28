@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { DemoFormData } from '@/lib/email-templates';
+import { FORM_CONTENT } from '@/lib/constants';
 
 // Validation schema (matching API validation)
 const demoSchema = z.object({
@@ -32,7 +32,7 @@ type DemoFormValues = z.infer<typeof demoSchema>;
 interface DemoFormProps {
   /**
    * Custom trigger button (optional)
-   * If not provided, default "Заказать демо" button will be used
+   * If not provided, default trigger button will be used
    */
   trigger?: React.ReactNode;
   /**
@@ -107,7 +107,7 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
           message: result.message || 'Произошла ошибка при отправке',
         });
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus({
         type: 'error',
         message: 'Произошла ошибка при отправке. Попробуйте позже.',
@@ -122,15 +122,15 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
       <DialogTrigger asChild>
         {trigger || (
           <Button variant={variant} size="lg">
-            Заказать демо
+            {FORM_CONTENT.demo.trigger}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Заказать демонстрацию Astra</DialogTitle>
+          <DialogTitle>{FORM_CONTENT.demo.title}</DialogTitle>
           <DialogDescription>
-            Заполните форму, и наш менеджер свяжется с вами для согласования удобного времени
+            {FORM_CONTENT.demo.description}
           </DialogDescription>
         </DialogHeader>
 
@@ -138,12 +138,15 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
           {/* Name Field */}
           <div className="space-y-2">
             <Label htmlFor="demo-name">
-              Имя <span className="text-destructive">*</span>
+              {FORM_CONTENT.demo.fields.name.label}{' '}
+              {FORM_CONTENT.demo.fields.name.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="demo-name"
               {...register('name')}
-              placeholder="Иван Иванов"
+              placeholder={FORM_CONTENT.demo.fields.name.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.name ? 'true' : 'false'}
             />
@@ -155,13 +158,16 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="demo-email">
-              Email <span className="text-destructive">*</span>
+              {FORM_CONTENT.demo.fields.email.label}{' '}
+              {FORM_CONTENT.demo.fields.email.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="demo-email"
               type="email"
               {...register('email')}
-              placeholder="ivan@company.com"
+              placeholder={FORM_CONTENT.demo.fields.email.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.email ? 'true' : 'false'}
             />
@@ -173,12 +179,15 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
           {/* Company Field */}
           <div className="space-y-2">
             <Label htmlFor="demo-company">
-              Компания <span className="text-destructive">*</span>
+              {FORM_CONTENT.demo.fields.company.label}{' '}
+              {FORM_CONTENT.demo.fields.company.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="demo-company"
               {...register('company')}
-              placeholder="ООО Компания"
+              placeholder={FORM_CONTENT.demo.fields.company.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.company ? 'true' : 'false'}
             />
@@ -189,12 +198,12 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
 
           {/* Phone Field (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="demo-phone">Телефон (опционально)</Label>
+            <Label htmlFor="demo-phone">{FORM_CONTENT.demo.fields.phone.label}</Label>
             <Input
               id="demo-phone"
               type="tel"
               {...register('phone')}
-              placeholder="+7 (999) 123-45-67"
+              placeholder={FORM_CONTENT.demo.fields.phone.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.phone ? 'true' : 'false'}
             />
@@ -205,22 +214,22 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
 
           {/* Company Size Field (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="demo-companySize">Размер компании (опционально)</Label>
+            <Label htmlFor="demo-companySize">{FORM_CONTENT.demo.fields.companySize.label}</Label>
             <Input
               id="demo-companySize"
               {...register('companySize')}
-              placeholder="50-200 сотрудников"
+              placeholder={FORM_CONTENT.demo.fields.companySize.placeholder}
               disabled={isSubmitting}
             />
           </div>
 
           {/* Preferred Time Field (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="demo-preferredTime">Предпочтительное время (опционально)</Label>
+            <Label htmlFor="demo-preferredTime">{FORM_CONTENT.demo.fields.preferredTime.label}</Label>
             <Input
               id="demo-preferredTime"
               {...register('preferredTime')}
-              placeholder="Понедельник, 14:00"
+              placeholder={FORM_CONTENT.demo.fields.preferredTime.placeholder}
               disabled={isSubmitting}
             />
           </div>
@@ -246,7 +255,7 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
             className="w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Отправка...' : 'Заказать демо'}
+            {isSubmitting ? FORM_CONTENT.demo.buttons.submitting : FORM_CONTENT.demo.buttons.submit}
           </Button>
         </form>
       </DialogContent>

@@ -411,3 +411,161 @@ export const NAVIGATION_LINKS = [
   { label: 'FAQ', href: '#faq' },
   { label: 'Контакты', href: '#contact' },
 ] as const;
+
+/**
+ * Form Content - All form-related copy
+ * Includes contact form, demo booking, and ROI calculator
+ */
+export const FORM_CONTENT = {
+  contact: {
+    trigger: 'Связаться с нами',
+    title: 'Связаться с нами',
+    description: 'Заполните форму, и наш менеджер свяжется с вами в ближайшее время',
+    fields: {
+      name: {
+        label: 'Имя',
+        placeholder: 'Иван Иванов',
+        required: true,
+      },
+      email: {
+        label: 'Email',
+        placeholder: 'ivan@company.com',
+        required: true,
+      },
+      company: {
+        label: 'Компания',
+        placeholder: 'ООО Компания',
+        required: true,
+      },
+      companySize: {
+        label: 'Размер компании (опционально)',
+        placeholder: '50-200 сотрудников',
+        required: false,
+      },
+      message: {
+        label: 'Сообщение',
+        placeholder: 'Расскажите о вашем запросе...',
+        required: true,
+      },
+    },
+    buttons: {
+      submit: 'Отправить',
+      submitting: 'Отправка...',
+    },
+  },
+  demo: {
+    trigger: 'Заказать демо',
+    title: 'Заказать демонстрацию Astra',
+    description: 'Заполните форму, и наш менеджер свяжется с вами для согласования удобного времени',
+    fields: {
+      name: {
+        label: 'Имя',
+        placeholder: 'Иван Иванов',
+        required: true,
+      },
+      email: {
+        label: 'Email',
+        placeholder: 'ivan@company.com',
+        required: true,
+      },
+      company: {
+        label: 'Компания',
+        placeholder: 'ООО Компания',
+        required: true,
+      },
+      phone: {
+        label: 'Телефон (опционально)',
+        placeholder: '+7 (999) 123-45-67',
+        required: false,
+      },
+      companySize: {
+        label: 'Размер компании (опционально)',
+        placeholder: '50-200 сотрудников',
+        required: false,
+      },
+      preferredTime: {
+        label: 'Предпочтительное время (опционально)',
+        placeholder: 'Понедельник, 14:00',
+        required: false,
+      },
+    },
+    buttons: {
+      submit: 'Заказать демо',
+      submitting: 'Отправка...',
+    },
+  },
+  roiCalculator: {
+    title: 'Калькулятор ROI',
+    description: 'Рассчитайте экономическую выгоду от внедрения Astra в вашей компании',
+    sectionTitle: 'Параметры компании',
+    fields: {
+      companySize: {
+        label: 'Количество сотрудников',
+        placeholder: '100',
+        required: true,
+      },
+      currentTurnover: {
+        label: 'Текущая текучесть кадров (%)',
+        placeholder: '15',
+        hint: 'Средняя по России: 15-20%',
+        required: true,
+      },
+      averageSalary: {
+        label: 'Средняя зарплата (руб/месяц)',
+        placeholder: '100000',
+        required: false,
+      },
+      currentHireTime: {
+        label: 'Время найма (дней)',
+        placeholder: '30',
+        required: false,
+      },
+    },
+    results: {
+      title: 'Детальный расчет',
+      emptyState: 'Заполните форму, чтобы увидеть расчет ROI',
+      metrics: {
+        roi: 'ROI',
+        roiDescription: 'Возврат инвестиций',
+        payback: 'Окупаемость',
+        paybackUnit: 'дн.',
+        paybackWeeks: 'недель',
+        savings: 'Экономия',
+        savingsDescription: 'В год',
+        timeSaved: 'Время',
+        timeSavedUnit: 'ч',
+        timeSavedDescription: 'Сэкономлено HR',
+      },
+      breakdown: {
+        currentSituation: 'Текущая ситуация:',
+        turnovers: 'Увольнений в год',
+        replacementCost: 'Стоимость найма',
+        annualLoss: 'Потери в год',
+        withAstra: 'С Astra:',
+        turnoverReduction: 'Снижение текучести',
+        hiringSavings: 'Экономия на найме',
+        timeSavings: 'Экономия времени HR',
+        recommendedPlan: 'Рекомендуемый план',
+        cost: 'Стоимость',
+        netProfit: 'Чистая прибыль',
+        threeYearTitle: 'Прогноз на 3 года:',
+        threeYearSavings: 'Общая экономия',
+      },
+    },
+    buttons: {
+      calculate: 'Рассчитать ROI',
+      calculating: 'Расчет...',
+    },
+  },
+  validation: {
+    required: 'Это поле обязательно',
+    invalidEmail: 'Некорректный email адрес',
+    minLength: 'Минимум {min} символов',
+    maxLength: 'Максимум {max} символов',
+  },
+  messages: {
+    success: 'Успешно отправлено!',
+    error: 'Произошла ошибка при отправке. Попробуйте позже.',
+    loading: 'Отправка...',
+  },
+} as const;

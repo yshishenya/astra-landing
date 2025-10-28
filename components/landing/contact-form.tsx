@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import type { ContactFormData } from '@/lib/email-templates';
+import { FORM_CONTENT } from '@/lib/constants';
 
 // Validation schema (matching API validation)
 const contactSchema = z.object({
@@ -32,7 +32,7 @@ type ContactFormValues = z.infer<typeof contactSchema>;
 interface ContactFormProps {
   /**
    * Custom trigger button (optional)
-   * If not provided, default "Связаться с нами" button will be used
+   * If not provided, default trigger button will be used
    */
   trigger?: React.ReactNode;
   /**
@@ -106,7 +106,7 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           message: result.message || 'Произошла ошибка при отправке',
         });
       }
-    } catch (error) {
+    } catch {
       setSubmitStatus({
         type: 'error',
         message: 'Произошла ошибка при отправке. Попробуйте позже.',
@@ -121,15 +121,15 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
       <DialogTrigger asChild>
         {trigger || (
           <Button variant={variant} size="lg">
-            Связаться с нами
+            {FORM_CONTENT.contact.trigger}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Связаться с нами</DialogTitle>
+          <DialogTitle>{FORM_CONTENT.contact.title}</DialogTitle>
           <DialogDescription>
-            Заполните форму, и наш менеджер свяжется с вами в ближайшее время
+            {FORM_CONTENT.contact.description}
           </DialogDescription>
         </DialogHeader>
 
@@ -137,12 +137,15 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           {/* Name Field */}
           <div className="space-y-2">
             <Label htmlFor="name">
-              Имя <span className="text-destructive">*</span>
+              {FORM_CONTENT.contact.fields.name.label}{' '}
+              {FORM_CONTENT.contact.fields.name.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="name"
               {...register('name')}
-              placeholder="Иван Иванов"
+              placeholder={FORM_CONTENT.contact.fields.name.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.name ? 'true' : 'false'}
             />
@@ -154,13 +157,16 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           {/* Email Field */}
           <div className="space-y-2">
             <Label htmlFor="email">
-              Email <span className="text-destructive">*</span>
+              {FORM_CONTENT.contact.fields.email.label}{' '}
+              {FORM_CONTENT.contact.fields.email.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="email"
               type="email"
               {...register('email')}
-              placeholder="ivan@company.com"
+              placeholder={FORM_CONTENT.contact.fields.email.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.email ? 'true' : 'false'}
             />
@@ -172,12 +178,15 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           {/* Company Field */}
           <div className="space-y-2">
             <Label htmlFor="company">
-              Компания <span className="text-destructive">*</span>
+              {FORM_CONTENT.contact.fields.company.label}{' '}
+              {FORM_CONTENT.contact.fields.company.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Input
               id="company"
               {...register('company')}
-              placeholder="ООО Компания"
+              placeholder={FORM_CONTENT.contact.fields.company.placeholder}
               disabled={isSubmitting}
               aria-invalid={errors.company ? 'true' : 'false'}
             />
@@ -188,11 +197,11 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
 
           {/* Company Size Field (Optional) */}
           <div className="space-y-2">
-            <Label htmlFor="companySize">Размер компании (опционально)</Label>
+            <Label htmlFor="companySize">{FORM_CONTENT.contact.fields.companySize.label}</Label>
             <Input
               id="companySize"
               {...register('companySize')}
-              placeholder="50-200 сотрудников"
+              placeholder={FORM_CONTENT.contact.fields.companySize.placeholder}
               disabled={isSubmitting}
             />
           </div>
@@ -200,12 +209,15 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           {/* Message Field */}
           <div className="space-y-2">
             <Label htmlFor="message">
-              Сообщение <span className="text-destructive">*</span>
+              {FORM_CONTENT.contact.fields.message.label}{' '}
+              {FORM_CONTENT.contact.fields.message.required && (
+                <span className="text-destructive">*</span>
+              )}
             </Label>
             <Textarea
               id="message"
               {...register('message')}
-              placeholder="Расскажите о вашем запросе..."
+              placeholder={FORM_CONTENT.contact.fields.message.placeholder}
               rows={4}
               disabled={isSubmitting}
               aria-invalid={errors.message ? 'true' : 'false'}
@@ -236,7 +248,7 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
             className="w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Отправка...' : 'Отправить'}
+            {isSubmitting ? FORM_CONTENT.contact.buttons.submitting : FORM_CONTENT.contact.buttons.submit}
           </Button>
         </form>
       </DialogContent>
