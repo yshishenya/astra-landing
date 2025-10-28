@@ -1,0 +1,60 @@
+name: Visual Tests with Percy
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'e2e/visual-regression.spec.ts'
+      - '.percy.yml'
+      - 'tailwind.config.ts'
+      - 'next.config.ts'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Run Percy tests
+        run: pnpm test:visual
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          NODE_ENV: test
+
+      - name: Percy Comparison URL
+        if: always()
+        run: |
+          echo "## 📸 Visual Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Visual regression tests completed with Percy." >> $GITHUB_STEP_SUMMARY
+          echo "Check the Percy dashboard for detailed results." >> $GITHUB_STEP_SUMMARY
+
