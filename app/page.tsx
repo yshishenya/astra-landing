@@ -21,6 +21,9 @@ export const metadata: Metadata = {
     'AI-карьерный помощник для внутреннего развития сотрудников. 6 методов анализа резюме за 90 секунд. 162x ROI, 99.9% качество.',
 };
 
+/**
+ * Renders the Home Page with various sections for content.
+ */
 export default function HomePage() {
   return (
     <>
