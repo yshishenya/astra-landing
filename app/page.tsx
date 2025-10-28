@@ -2,12 +2,15 @@ import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/landing/header';
 import { Footer } from '@/components/landing/footer';
+import { DemoForm } from '@/components/landing/demo-form';
+import { ContactForm } from '@/components/landing/contact-form';
 import { TrustBar } from '@/components/landing/trust-bar';
 import { ProblemSection } from '@/components/landing/problem-section';
 import { SolutionSection } from '@/components/landing/solution-section';
 import { FeaturesSection } from '@/components/landing/features-section';
 import { ResultsSection } from '@/components/landing/results-section';
 import { UseCasesSection } from '@/components/landing/use-cases-section';
+import { ROICalculatorSection } from '@/components/landing/roi-calculator';
 import { TestimonialsSection } from '@/components/landing/testimonials-section';
 import { PricingSection } from '@/components/landing/pricing-section';
 import { FAQSection } from '@/components/landing/faq-section';
@@ -50,12 +53,22 @@ export default function HomePage() {
 
               {/* CTAs */}
               <div className="mb-16 flex flex-col gap-4 sm:flex-row">
-                <Button variant="primary" size="lg" className="px-8 py-4 text-lg">
-                  {CTA_BUTTONS.primary}
-                </Button>
-                <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-                  {CTA_BUTTONS.secondary}
-                </Button>
+                <DemoForm
+                  variant="primary"
+                  trigger={
+                    <Button variant="primary" size="lg" className="px-8 py-4 text-lg">
+                      {CTA_BUTTONS.primary}
+                    </Button>
+                  }
+                />
+                <ContactForm
+                  variant="outline"
+                  trigger={
+                    <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
+                      {CTA_BUTTONS.secondary}
+                    </Button>
+                  }
+                />
               </div>
 
               {/* Stats with Glassmorphism */}
@@ -94,6 +107,9 @@ export default function HomePage() {
 
         {/* Use Cases */}
         <UseCasesSection />
+
+        {/* ROI Calculator */}
+        <ROICalculatorSection />
 
         {/* Testimonials */}
         <TestimonialsSection />

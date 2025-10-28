@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle2, ArrowRight, Calendar, MessageSquare } from 'lucide-react';
 import { FINAL_CTA, STATS } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { DemoForm } from './demo-form';
+import { ContactForm } from './contact-form';
 
 /**
  * Trust badge item interface
@@ -120,7 +122,7 @@ export const FinalCTASection: FC = () => {
             transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 }}
             className="mb-12 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6"
           >
-            {/* Primary CTA */}
+            {/* Primary CTA - Demo Form */}
             <motion.div
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
@@ -145,53 +147,59 @@ export const FinalCTASection: FC = () => {
               }
               className="rounded-lg"
             >
-              <a href={FINAL_CTA.buttons.primary.href}>
-                <Button
-                  size="lg"
-                  variant="accent"
-                  className="group relative overflow-hidden bg-white text-lg font-bold text-primary shadow-2xl hover:bg-white/95"
-                >
-                  {FINAL_CTA.buttons.primary.text}
-                  <ArrowRight
-                    className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
-                    aria-hidden="true"
-                  />
-                </Button>
-              </a>
+              <DemoForm
+                trigger={
+                  <Button
+                    size="lg"
+                    variant="accent"
+                    className="group relative overflow-hidden bg-white text-lg font-bold text-primary shadow-2xl hover:bg-white/95"
+                  >
+                    {FINAL_CTA.buttons.primary.text}
+                    <ArrowRight
+                      className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    />
+                  </Button>
+                }
+              />
             </motion.div>
 
-            {/* Secondary CTA */}
+            {/* Secondary CTA - Demo Form */}
             <motion.div
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             >
-              <a href={FINAL_CTA.buttons.secondary.href}>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white bg-transparent text-lg font-semibold text-white hover:bg-white hover:text-primary"
-                >
-                  <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
-                  {FINAL_CTA.buttons.secondary.text}
-                </Button>
-              </a>
+              <DemoForm
+                trigger={
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-2 border-white bg-transparent text-lg font-semibold text-white hover:bg-white hover:text-primary"
+                  >
+                    <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
+                    {FINAL_CTA.buttons.secondary.text}
+                  </Button>
+                }
+              />
             </motion.div>
 
-            {/* Tertiary CTA */}
+            {/* Tertiary CTA - Contact Form */}
             <motion.div
               whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
               whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
             >
-              <a href={FINAL_CTA.buttons.tertiary.href}>
-                <Button
-                  size="lg"
-                  variant="link"
-                  className="text-lg font-semibold text-white underline-offset-4 hover:text-white/90"
-                >
-                  <MessageSquare className="mr-2 h-5 w-5" aria-hidden="true" />
-                  {FINAL_CTA.buttons.tertiary.text}
-                </Button>
-              </a>
+              <ContactForm
+                trigger={
+                  <Button
+                    size="lg"
+                    variant="link"
+                    className="text-lg font-semibold text-white underline-offset-4 hover:text-white/90"
+                  >
+                    <MessageSquare className="mr-2 h-5 w-5" aria-hidden="true" />
+                    {FINAL_CTA.buttons.tertiary.text}
+                  </Button>
+                }
+              />
             </motion.div>
           </motion.div>
 
