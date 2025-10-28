@@ -15,11 +15,12 @@
 - [x] [SETUP-04] Настройка shadcn/ui компонентов
 - [x] [SETUP-05] Установка Framer Motion + Lenis
 - [x] [SETUP-06] Структура папок и компонентов
-- [x] [COMP-03] Базовая Hero Section с CTAs и статистикой
+- [x] [COMP-03] Базовая Hero Section с CTAs и статистикой ✅
 - [x] [COMP-01] Layout: Header + Navigation (responsive) ✅
 - [x] [COMP-02] Layout: Footer с links ✅
 - [x] [COMP-04] Trust Bar с статистикой компаний ✅
 - [x] [COMP-05] Problem Statement (3 боли) ✅
+- [x] [FEAT-01] Solution Overview (4 шага "Как это работает") ✅
 
 ---
 
@@ -40,14 +41,6 @@
 ## 📋 To Do - Phase 2: Features (Week 3-4)
 
 ### Feature Sections
-
-- [ ] [FEAT-01] Solution Overview (4 шага "Как это работает")
-  - Step 1: Загрузить резюме (PDF/DOCX/TXT)
-  - Step 2: AI анализирует (90 сек)
-  - Step 3: Получить PDF результат (6 методов)
-  - Step 4: Провести консультацию
-  - Animation: numbered counter, progress indicator
-  - 90-second demo video
 
 - [ ] [FEAT-02] Key Features (6 методов, Bento Grid)
   - Bento Grid layout (асимметричная сетка)
