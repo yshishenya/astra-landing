@@ -13,17 +13,22 @@ interface StepCardProps {
 
 const StepCard: FC<StepCardProps> = ({ number, icon, title, description }) => {
   return (
-    <div className="relative">
+    <div className="relative" role="listitem">
       <div className="flex items-start gap-6">
         {/* Number Badge */}
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+        <div
+          className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary/10"
+          aria-label={`Шаг ${number}`}
+        >
           <span className="text-2xl font-bold text-primary">{number}</span>
         </div>
 
         {/* Content */}
         <div className="flex-1">
           <div className="mb-3 flex items-center gap-3">
-            <div className="text-primary">{icon}</div>
+            <div className="text-primary" aria-hidden="true">
+              {icon}
+            </div>
             <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
           </div>
 
@@ -43,11 +48,11 @@ export const SolutionSection: FC = () => {
   ];
 
   return (
-    <section id="solution" className="bg-white py-20">
+    <section id="solution" aria-labelledby="solution-heading" className="bg-white py-20">
       <div className="container-custom">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">
+          <h2 id="solution-heading" className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">
             Как Астра Выявляет Потенциал
           </h2>
           <p className="mx-auto max-w-3xl text-xl text-slate-600">
@@ -56,7 +61,7 @@ export const SolutionSection: FC = () => {
         </div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2" role="list">
           {SOLUTION_STEPS.map((step, idx) => (
             <StepCard
               key={step.number}

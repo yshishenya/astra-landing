@@ -46,8 +46,9 @@ const PainCard: FC<PainCardProps> = ({
       <Link
         href={ctaHref}
         className="flex items-center justify-center gap-2 font-semibold text-primary transition-all hover:gap-3"
+        aria-label={`${ctaText} для проблемы: ${title}`}
       >
-        {ctaText} <ArrowRight className="h-5 w-5" />
+        {ctaText} <ArrowRight className="h-5 w-5" aria-hidden="true" />
       </Link>
     </div>
   );
@@ -56,6 +57,7 @@ const PainCard: FC<PainCardProps> = ({
 export const ProblemSection: FC = () => {
   const painCards = [
     {
+      id: 'turnover',
       icon: <Users className="h-16 w-16 text-orange-500" />,
       stat: PAIN_POINTS[0].stat,
       title: PAIN_POINTS[0].title,
@@ -65,6 +67,7 @@ export const ProblemSection: FC = () => {
       ctaText: 'Посчитать ваши потери',
     },
     {
+      id: 'time-consuming',
       icon: <Clock className="h-16 w-16 text-orange-500" />,
       stat: PAIN_POINTS[1].stat,
       title: PAIN_POINTS[1].title,
@@ -74,6 +77,7 @@ export const ProblemSection: FC = () => {
       ctaText: 'Как Астра это решает',
     },
     {
+      id: 'cost',
       icon: <DollarSign className="h-16 w-16 text-orange-500" />,
       stat: PAIN_POINTS[2].stat,
       title: PAIN_POINTS[2].title,
@@ -85,11 +89,11 @@ export const ProblemSection: FC = () => {
   ];
 
   return (
-    <section className="bg-slate-50 py-20">
+    <section aria-labelledby="problem-heading" className="bg-slate-50 py-20">
       <div className="container-custom">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <h2 className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">
+          <h2 id="problem-heading" className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl">
             Почему Ваши Лучшие Люди Уходят
           </h2>
           <p className="mx-auto max-w-3xl text-xl text-slate-600">
@@ -100,8 +104,8 @@ export const ProblemSection: FC = () => {
 
         {/* Pain Cards Grid */}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {painCards.map((pain, idx) => (
-            <PainCard key={idx} {...pain} />
+          {painCards.map((pain) => (
+            <PainCard key={pain.id} {...pain} />
           ))}
         </div>
 
