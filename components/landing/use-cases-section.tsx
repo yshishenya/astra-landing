@@ -1,9 +1,10 @@
 'use client';
 
 import { type FC } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { TrendingUp, Users, Building, UserPlus, Check } from 'lucide-react';
-import { USE_CASES } from '@/lib/constants';
+import { USE_CASES, USE_CASES_SECTION } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 type ColorTheme = 'green' | 'blue' | 'purple' | 'orange';
@@ -14,6 +15,7 @@ interface UseCaseCardProps {
   solution: readonly string[];
   result: string;
   icon: React.ReactNode;
+  illustration: string;
   color: ColorTheme;
   index: number;
 }
@@ -79,6 +81,7 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
   solution,
   result,
   icon,
+  illustration,
   color,
   index,
 }) => {
@@ -94,8 +97,19 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
       whileHover={prefersReducedMotion ? {} : { y: -12, scale: 1.02 }}
       className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 ${colors.border} bg-white shadow-lg transition-all hover:shadow-2xl`}
     >
+      {/* Background Illustration */}
+      <div className="absolute right-0 top-0 h-48 w-48 opacity-5 transition-opacity group-hover:opacity-10">
+        <Image
+          src={illustration}
+          alt=""
+          fill
+          className="object-contain"
+          aria-hidden="true"
+        />
+      </div>
+
       {/* Icon Container */}
-      <div className={`p-8 pb-0`}>
+      <div className={`relative p-8 pb-0`}>
         <motion.div
           initial={prefersReducedMotion ? {} : { scale: 0, rotate: -180 }}
           whileInView={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
@@ -117,7 +131,7 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
         {/* Problem */}
         <div className="mb-6">
           <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
-            Проблема
+            {USE_CASES_SECTION.labels.problem}
           </h4>
           <p className="leading-relaxed text-slate-700">{problem}</p>
         </div>
@@ -125,7 +139,7 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
         {/* Solution */}
         <div className="mb-6">
           <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
-            Решение Astra
+            {USE_CASES_SECTION.labels.solution}
           </h4>
           <ul className="space-y-3" role="list">
             {solution.map((item, idx) => (
@@ -155,7 +169,7 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
       {/* Result - at bottom */}
       <div className={`mt-auto rounded-b-2xl ${colors.resultBg} p-6`}>
         <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-700">
-          Результат
+          {USE_CASES_SECTION.labels.result}
         </h4>
         <p className={`font-semibold ${colors.resultText}`}>{result}</p>
       </div>
@@ -171,12 +185,20 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
 
 export const UseCasesSection: FC = () => {
   const prefersReducedMotion = useReducedMotion();
-  const useCaseIcons = [
-    <TrendingUp key="trending" className="h-8 w-8" />,
-    <Users key="users" className="h-8 w-8" />,
-    <Building key="building" className="h-8 w-8" />,
-    <UserPlus key="userplus" className="h-8 w-8" />,
-  ];
+
+  const iconComponents = {
+    TrendingUp: TrendingUp,
+    Users: Users,
+    Building: Building,
+    UserPlus: UserPlus,
+  };
+
+  const useCaseIcons = USE_CASES_SECTION.icons.map((iconName) => {
+    const IconComponent = iconComponents[iconName];
+    return <IconComponent key={iconName.toLowerCase()} className="h-8 w-8" />;
+  });
+
+  const useCaseIllustrations = USE_CASES_SECTION.illustrations;
 
   return (
     <section
@@ -195,7 +217,7 @@ export const UseCasesSection: FC = () => {
             id="use-cases-heading"
             className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
           >
-            Реальные Сценарии Применения
+            {USE_CASES_SECTION.heading}
           </motion.h2>
           <motion.p
             initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
@@ -204,7 +226,7 @@ export const UseCasesSection: FC = () => {
             transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
             className="mx-auto max-w-3xl text-xl text-slate-600"
           >
-            Как компании используют Astra для решения типичных HR-задач
+            {USE_CASES_SECTION.subheading}
           </motion.p>
         </div>
 
@@ -218,6 +240,7 @@ export const UseCasesSection: FC = () => {
               solution={useCase.solution}
               result={useCase.result}
               icon={useCaseIcons[index]}
+              illustration={useCaseIllustrations[index] || ''}
               color={useCase.color}
               index={index}
             />

@@ -1,9 +1,10 @@
 'use client';
 
 import { type FC } from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
-import { TESTIMONIALS, STATS } from '@/lib/constants';
+import { TESTIMONIALS, STATS, TESTIMONIALS_SECTION } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface TestimonialCardProps {
@@ -24,6 +25,7 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
   company,
   companySize,
   rating,
+  avatar,
   index,
 }) => {
   const prefersReducedMotion = useReducedMotion();
@@ -62,12 +64,16 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
 
       {/* Author Info */}
       <div className="flex items-center gap-4 border-t border-slate-200 pt-6">
-        {/* Avatar Circle with Initials */}
-        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary text-xl font-bold text-white">
-          {author
-            .split(' ')
-            .map((n) => n[0])
-            .join('')}
+        {/* Avatar Photo */}
+        <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-full ring-2 ring-primary/20">
+          <Image
+            src={avatar}
+            alt={`Фотография ${author}`}
+            width={56}
+            height={56}
+            className="object-cover"
+            quality={90}
+          />
         </div>
 
         {/* Author Details */}
@@ -103,7 +109,7 @@ export const TestimonialsSection: FC = () => {
             id="testimonials-heading"
             className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
           >
-            Что говорят наши клиенты
+            {TESTIMONIALS_SECTION.heading}
           </motion.h2>
 
           <motion.p
@@ -113,8 +119,7 @@ export const TestimonialsSection: FC = () => {
             transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
             className="mx-auto mb-8 max-w-3xl text-xl text-slate-600"
           >
-            Присоединяйтесь к компаниям, которые уже трансформировали процесс развития
-            сотрудников
+            {TESTIMONIALS_SECTION.subheading}
           </motion.p>
 
           {/* Stats Bar */}
@@ -127,17 +132,17 @@ export const TestimonialsSection: FC = () => {
           >
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{STATS.companies}</div>
-              <div className="text-sm text-slate-600">компаний</div>
+              <div className="text-sm text-slate-600">{TESTIMONIALS_SECTION.statsLabels.companies}</div>
             </div>
             <div className="h-12 w-px bg-slate-300" aria-hidden="true" />
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{STATS.analyses}</div>
-              <div className="text-sm text-slate-600">анализов</div>
+              <div className="text-sm text-slate-600">{TESTIMONIALS_SECTION.statsLabels.analyses}</div>
             </div>
             <div className="h-12 w-px bg-slate-300" aria-hidden="true" />
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{STATS.quality}</div>
-              <div className="text-sm text-slate-600">качество</div>
+              <div className="text-sm text-slate-600">{TESTIMONIALS_SECTION.statsLabels.quality}</div>
             </div>
           </motion.div>
         </div>

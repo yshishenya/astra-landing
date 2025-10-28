@@ -1,20 +1,22 @@
 'use client';
 
 import { type FC } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Upload, Brain, FileText, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { SOLUTION_STEPS } from '@/lib/constants';
+import { SOLUTION_STEPS, SOLUTION_SECTION } from '@/lib/constants';
 
 interface StepCardProps {
   number: number;
   icon: React.ReactNode;
   title: string;
   description: string;
+  screenshot: string;
 }
 
-const StepCard: FC<StepCardProps> = ({ number, icon, title, description }) => {
+const StepCard: FC<StepCardProps> = ({ number, icon, title, description, screenshot }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -22,11 +24,11 @@ const StepCard: FC<StepCardProps> = ({ number, icon, title, description }) => {
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 0.6, delay: (number - 1) * 0.15 }}
       whileHover={{ scale: 1.02 }}
-      className="relative"
+      className="relative flex flex-col gap-6 overflow-hidden rounded-xl bg-slate-50 p-6 shadow-sm transition-shadow hover:shadow-md"
       role="listitem"
     >
-      <div className="flex items-start gap-6">
-        {/* Number Badge */}
+      {/* Number Badge */}
+      <div className="flex items-start gap-4">
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           whileInView={{ scale: 1, rotate: 0 }}
@@ -51,23 +53,47 @@ const StepCard: FC<StepCardProps> = ({ number, icon, title, description }) => {
             >
               {icon}
             </motion.div>
-            <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
+            <h3 className="text-xl font-bold text-slate-900">{title}</h3>
           </div>
 
           <p className="leading-relaxed text-slate-600">{description}</p>
         </div>
       </div>
+
+      {/* Screenshot/Illustration */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: (number - 1) * 0.15 + 0.4 }}
+        className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-white shadow-sm"
+      >
+        <Image
+          src={screenshot}
+          alt={`${title} - скриншот интерфейса`}
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+      </motion.div>
     </motion.div>
   );
 };
 
 export const SolutionSection: FC = () => {
-  const stepIcons = [
-    <Upload key="upload" className="h-6 w-6" />,
-    <Brain key="brain" className="h-6 w-6" />,
-    <FileText key="filetext" className="h-6 w-6" />,
-    <MessageCircle key="message" className="h-6 w-6" />,
-  ];
+  const iconComponents = {
+    Upload: Upload,
+    Brain: Brain,
+    FileText: FileText,
+    MessageCircle: MessageCircle,
+  };
+
+  const stepIcons = SOLUTION_SECTION.icons.map((iconName) => {
+    const IconComponent = iconComponents[iconName];
+    return <IconComponent key={iconName.toLowerCase()} className="h-6 w-6" />;
+  });
+
+  const stepScreenshots = SOLUTION_SECTION.screenshots;
 
   return (
     <section id="solution" aria-labelledby="solution-heading" className="bg-white py-20">
@@ -82,7 +108,7 @@ export const SolutionSection: FC = () => {
             id="solution-heading"
             className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
           >
-            Как Астра Выявляет Потенциал
+            {SOLUTION_SECTION.heading}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -91,7 +117,7 @@ export const SolutionSection: FC = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="mx-auto max-w-3xl text-xl text-slate-600"
           >
-            Четыре простых шага от загрузки резюме до готового плана развития
+            {SOLUTION_SECTION.subheading}
           </motion.p>
         </div>
 
@@ -104,6 +130,7 @@ export const SolutionSection: FC = () => {
               icon={stepIcons[idx]}
               title={step.title}
               description={step.description}
+              screenshot={stepScreenshots[idx] || ''}
             />
           ))}
         </div>
@@ -112,11 +139,11 @@ export const SolutionSection: FC = () => {
         <div className="mt-16 text-center">
           <Link href="#contact">
             <Button variant="primary" size="lg">
-              Начать Анализ
+              {SOLUTION_SECTION.cta}
             </Button>
           </Link>
           <p className="mt-4 text-sm text-slate-500">
-            Первый анализ бесплатно • Без кредитной карты
+            {SOLUTION_SECTION.ctaSubtext}
           </p>
         </div>
       </div>

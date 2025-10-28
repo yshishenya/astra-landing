@@ -121,6 +121,20 @@ export const FEATURES = [
   },
 ] as const;
 
+export const SOLUTION_SECTION = {
+  heading: 'Как Астра Выявляет Потенциал',
+  subheading: 'Четыре простых шага от загрузки резюме до готового плана развития',
+  cta: 'Начать Анализ',
+  ctaSubtext: 'Первый анализ бесплатно • Без кредитной карты',
+  icons: ['Upload', 'Brain', 'FileText', 'MessageCircle'] as const,
+  screenshots: [
+    '/images/screenshots/upload-interface.svg',
+    '/images/screenshots/analysis-progress.svg',
+    '/images/screenshots/pdf-preview.svg',
+    '/images/illustrations/consultation.svg',
+  ] as const,
+} as const;
+
 export const SOLUTION_STEPS = [
   {
     number: 1,
@@ -299,6 +313,23 @@ export const RESULTS_METRICS = [
   },
 ] as const;
 
+export const USE_CASES_SECTION = {
+  heading: 'Реальные Сценарии Применения',
+  subheading: 'Как компании используют Astra для решения типичных HR-задач',
+  labels: {
+    problem: 'Проблема',
+    solution: 'Решение Astra',
+    result: 'Результат',
+  } as const,
+  icons: ['TrendingUp', 'Users', 'Building', 'UserPlus'] as const,
+  illustrations: [
+    '/images/illustrations/career-growth.svg',
+    '/images/illustrations/team-collaboration.svg',
+    '/images/illustrations/data-analysis.svg',
+    '/images/illustrations/consultation.svg',
+  ] as const,
+} as const;
+
 export const USE_CASES = [
   {
     id: 1,
@@ -360,6 +391,17 @@ export const USE_CASES = [
     color: 'orange' as const,
   },
 ] as const;
+
+export const TESTIMONIALS_SECTION = {
+  heading: 'Что говорят наши клиенты',
+  subheading:
+    'Присоединяйтесь к компаниям, которые уже трансформировали процесс развития сотрудников',
+  statsLabels: {
+    companies: 'компаний',
+    analyses: 'анализов',
+    quality: 'качество',
+  } as const,
+} as const;
 
 export const TESTIMONIALS = [
   {
