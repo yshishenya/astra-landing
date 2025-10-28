@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // output: 'standalone', // Temporarily disabled to debug build issue
+  output: 'standalone', // Required for Docker builds
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [],

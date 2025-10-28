@@ -182,6 +182,7 @@ export const trackEvent = (
 
   // Log to console in development
   if (isDevelopment()) {
+    // eslint-disable-next-line no-console
     console.log('[Analytics]', eventName, sanitizedProps);
   }
 
@@ -387,6 +388,7 @@ export const getAnalyticsStatus = () => {
  */
 export const debugAnalytics = (): void => {
   const status = getAnalyticsStatus();
+  /* eslint-disable no-console */
   console.group('Analytics Configuration');
   console.log('Environment:', process.env.NODE_ENV);
   console.log('GA4 Enabled:', status.ga4Enabled);
@@ -399,4 +401,5 @@ export const debugAnalytics = (): void => {
   console.log('Window.gtag:', typeof window !== 'undefined' ? typeof window.gtag : 'N/A');
   console.log('Window.plausible:', typeof window !== 'undefined' ? typeof window.plausible : 'N/A');
   console.groupEnd();
+  /* eslint-enable no-console */
 };

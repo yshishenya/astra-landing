@@ -4,7 +4,7 @@ import { type FC } from 'react';
 import { Button } from '@/components/ui/button';
 import { DemoForm } from './demo-form';
 import { ContactForm } from './contact-form';
-import { HERO_HEADLINES, CTA_BUTTONS, STATS } from '@/lib/constants';
+import { HERO_HEADLINES, HERO_SUBHEADLINE, CTA_BUTTONS, STATS, STATS_LABELS } from '@/lib/constants';
 import { trackCTAClick } from '@/lib/analytics';
 
 /**
@@ -45,10 +45,7 @@ export const HeroSection: FC = () => {
           >
             {HERO_HEADLINES[0]}
           </h1>
-          <p className="mb-10 max-w-3xl text-xl text-white/90 md:text-2xl">
-            AI-карьерный помощник для развития сотрудников. 6 методов анализа одновременно. 99.9%
-            качество, 162x ROI.
-          </p>
+          <p className="mb-10 max-w-3xl text-xl text-white/90 md:text-2xl">{HERO_SUBHEADLINE}</p>
 
           {/* CTAs */}
           <div className="mb-16 flex flex-col gap-4 sm:flex-row">
@@ -88,15 +85,15 @@ export const HeroSection: FC = () => {
           <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
             <div className="glass-card ai-glow-cyan p-8 text-center transition-all hover:scale-105">
               <div className="text-5xl font-bold text-white">{STATS.analysisTime}</div>
-              <div className="mt-3 text-lg text-white/80">время анализа</div>
+              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.analysisTime}</div>
             </div>
             <div className="glass-card ai-glow-blue p-8 text-center transition-all hover:scale-105">
               <div className="text-5xl font-bold text-white">{STATS.quality}</div>
-              <div className="mt-3 text-lg text-white/80">качество</div>
+              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.quality}</div>
             </div>
             <div className="glass-card ai-glow-purple p-8 text-center transition-all hover:scale-105">
               <div className="text-5xl font-bold text-white">{STATS.roi}</div>
-              <div className="mt-3 text-lg text-white/80">ROI</div>
+              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.roi}</div>
             </div>
           </div>
         </div>

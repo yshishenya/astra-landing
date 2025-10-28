@@ -24,12 +24,21 @@ export const STATS = {
   scalability: '500+',
 } as const;
 
+export const STATS_LABELS = {
+  analysisTime: 'время анализа',
+  quality: 'качество',
+  roi: 'ROI',
+} as const;
+
 export const HERO_HEADLINES = [
   'Выявить потенциал сотрудника за 90 секунд',
   'Лучшие люди уходят потому что не видят путей развития',
   'Снизить затраты на текучку на 5-10M рублей в год',
   'Построить культуру развития на AI',
 ] as const;
+
+export const HERO_SUBHEADLINE =
+  'AI-карьерный помощник для развития сотрудников. 6 методов анализа одновременно. 99.9% качество, 162x ROI.' as const;
 
 export const CTA_BUTTONS = {
   primary: 'Начать бесплатно',
