@@ -1,8 +1,7 @@
 import { MetadataRoute } from 'next';
 
 /**
- * Dynamic sitemap generation for Next.js 15
- * https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
+ * Generates a dynamic sitemap for Next.js 15.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://astra.ai';
