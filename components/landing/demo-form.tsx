@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FORM_CONTENT } from '@/lib/constants';
+import { trackFormSubmission, trackError } from '@/lib/analytics';
 
 // Validation schema (matching API validation)
 const demoSchema = z.object({
@@ -91,6 +92,14 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
       const result = await response.json();
 
       if (response.ok) {
+        // Track successful demo booking
+        trackFormSubmission('demo', {
+          form_type: 'demo',
+          source: 'demo_dialog',
+          company_size: data.companySize,
+          success: true,
+        });
+
         setSubmitStatus({
           type: 'success',
           message: result.message || 'Запрос на демо успешно отправлен!',
@@ -102,12 +111,31 @@ export const DemoForm: FC<DemoFormProps> = ({ trigger, variant = 'primary' }) =>
           setSubmitStatus({ type: null, message: '' });
         }, 2000);
       } else {
+        // Track failed demo booking
+        trackFormSubmission('demo', {
+          form_type: 'demo',
+          source: 'demo_dialog',
+          success: false,
+          error_message: result.message || 'Unknown error',
+        });
+
+        trackError('Demo form submission failed', {
+          status_code: response.status,
+          error_message: result.message,
+        });
+
         setSubmitStatus({
           type: 'error',
           message: result.message || 'Произошла ошибка при отправке',
         });
       }
-    } catch {
+    } catch (error) {
+      // Track exception
+      trackError('Demo form exception', {
+        error_type: 'network_error',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
+
       setSubmitStatus({
         type: 'error',
         message: 'Произошла ошибка при отправке. Попробуйте позже.',

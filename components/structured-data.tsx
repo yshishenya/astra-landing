@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import Script from 'next/script';
-import { FEATURES, STATS } from '@/lib/constants';
+import { FEATURES, STATS, FAQ_ITEMS, PRICING_PLANS } from '@/lib/constants';
 
 /**
  * Structured Data Component
@@ -120,6 +120,79 @@ export const StructuredData: FC = () => {
     },
   };
 
+  // FAQPage Schema
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
+  // BreadcrumbList Schema
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Главная',
+        item: process.env.NEXT_PUBLIC_APP_URL || 'https://astra.ai',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Возможности',
+        item: `${process.env.NEXT_PUBLIC_APP_URL || 'https://astra.ai'}#features`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: 'Цены',
+        item: `${process.env.NEXT_PUBLIC_APP_URL || 'https://astra.ai'}#pricing`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 4,
+        name: 'FAQ',
+        item: `${process.env.NEXT_PUBLIC_APP_URL || 'https://astra.ai'}#faq`,
+      },
+    ],
+  };
+
+  // Offer Schema for Pricing
+  const offerSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Тарифные планы Astra',
+    description: 'Выберите подходящий план для вашей компании',
+    numberOfItems: PRICING_PLANS.length,
+    itemListElement: PRICING_PLANS.map((plan, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Offer',
+        name: `${plan.name} - ${plan.description}`,
+        description: plan.features.join(', '),
+        price: plan.price?.toString() || 'Custom',
+        priceCurrency: 'RUB',
+        availability: 'https://schema.org/InStock',
+        validFrom: '2025-01-01',
+        priceValidUntil: '2025-12-31',
+        seller: {
+          '@type': 'Organization',
+          name: 'Astra',
+        },
+      },
+    })),
+  };
+
   return (
     <>
       {/* Organization Schema */}
@@ -164,6 +237,33 @@ export const StructuredData: FC = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(webPageSchema),
+        }}
+      />
+
+      {/* FAQ Schema */}
+      <Script
+        id="schema-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqSchema),
+        }}
+      />
+
+      {/* BreadcrumbList Schema */}
+      <Script
+        id="schema-breadcrumb"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
+      {/* Offer/Pricing Schema */}
+      <Script
+        id="schema-offers"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(offerSchema),
         }}
       />
     </>

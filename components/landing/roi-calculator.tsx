@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TrendingUp, Clock, DollarSign, Calendar } from 'lucide-react';
 import { FORM_CONTENT } from '@/lib/constants';
+import { trackROICalculation, trackError } from '@/lib/analytics';
 
 // Validation schema (matching API validation)
 const roiSchema = z.object({
@@ -123,11 +124,37 @@ export const ROICalculatorSection: FC = () => {
 
       if (response.ok) {
         setRoiResult(result.data);
+
+        // Track successful ROI calculation
+        trackROICalculation({
+          company_size: data.companySize,
+          current_turnover: data.currentTurnover,
+          average_salary: data.averageSalary || 100000,
+          roi_multiplier: result.data.roi.roiMultiplier,
+          payback_days: result.data.roi.paybackDays,
+          annual_savings: result.data.withAstra.totalAnnualSavings,
+          recommended_plan: result.data.roi.recommendedPlan,
+          turnover_reduction: result.data.withAstra.turnoverReduction,
+        });
       } else {
         setError(result.message || 'Произошла ошибка при расчете');
+
+        // Track ROI calculation error
+        trackError('ROI calculation failed', {
+          company_size: data.companySize,
+          error_message: result.message,
+          status_code: response.status,
+        });
       }
-    } catch {
+    } catch (error) {
       setError('Произошла ошибка при расчете. Попробуйте позже.');
+
+      // Track exception
+      trackError('ROI calculation exception', {
+        company_size: data.companySize,
+        error_type: 'network_error',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
     } finally {
       setIsCalculating(false);
     }

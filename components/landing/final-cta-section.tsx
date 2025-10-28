@@ -8,6 +8,7 @@ import { FINAL_CTA, STATS } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DemoForm } from './demo-form';
 import { ContactForm } from './contact-form';
+import { trackCTAClick } from '@/lib/analytics';
 
 /**
  * Trust badge item interface
@@ -153,6 +154,7 @@ export const FinalCTASection: FC = () => {
                     size="lg"
                     variant="accent"
                     className="group relative overflow-hidden bg-white text-lg font-bold text-primary shadow-2xl hover:bg-white/95"
+                    onClick={() => trackCTAClick('start_trial', 'final_cta', { button_text: FINAL_CTA.buttons.primary.text })}
                   >
                     {FINAL_CTA.buttons.primary.text}
                     <ArrowRight
@@ -175,6 +177,7 @@ export const FinalCTASection: FC = () => {
                     size="lg"
                     variant="outline"
                     className="border-2 border-white bg-transparent text-lg font-semibold text-white hover:bg-white hover:text-primary"
+                    onClick={() => trackCTAClick('book_demo', 'final_cta', { button_text: FINAL_CTA.buttons.secondary.text })}
                   >
                     <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
                     {FINAL_CTA.buttons.secondary.text}
@@ -194,6 +197,7 @@ export const FinalCTASection: FC = () => {
                     size="lg"
                     variant="link"
                     className="text-lg font-semibold text-white underline-offset-4 hover:text-white/90"
+                    onClick={() => trackCTAClick('contact_us', 'final_cta', { button_text: FINAL_CTA.buttons.tertiary.text })}
                   >
                     <MessageSquare className="mr-2 h-5 w-5" aria-hidden="true" />
                     {FINAL_CTA.buttons.tertiary.text}

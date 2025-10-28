@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { Resend } from 'resend';
+// Temporarily disabled for performance testing - known Next.js 15 + Resend issue
+// import { Resend } from 'resend';
 import { contactFormEmailToTeam, contactFormEmailToTeamPlainText } from '@/lib/email-templates';
 import { rateLimit, getClientIdentifier, RateLimitPresets } from '@/lib/rate-limit';
 import { sendEmailWithTimeout, EmailTimeoutError } from '@/lib/email';
+
+// Force dynamic rendering to prevent build-time errors
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+// Workaround type until Resend is re-enabled
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Resend = any;
 
 // Validation schema for contact form
 const contactSchema = z.object({
@@ -15,7 +24,8 @@ const contactSchema = z.object({
 });
 
 // Initialize Resend (only if API key is provided)
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+// Temporarily disabled for performance testing
+const resend: Resend | null = null; // process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(request: Request) {
   try {

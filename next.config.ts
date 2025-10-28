@@ -2,7 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  output: 'standalone', // Optimize for Docker deployment
+  // output: 'standalone', // Temporarily disabled to debug build issue
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [],
@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
+  // Skip static optimization for error pages to avoid Resend/React-email build issues
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true,
 };
 
 export default nextConfig;

@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { FORM_CONTENT } from '@/lib/constants';
+import { trackFormSubmission, trackError } from '@/lib/analytics';
 
 // Validation schema (matching API validation)
 const contactSchema = z.object({
@@ -90,6 +91,14 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
       const result = await response.json();
 
       if (response.ok) {
+        // Track successful form submission
+        trackFormSubmission('contact', {
+          form_type: 'contact',
+          source: 'contact_dialog',
+          company_size: data.companySize,
+          success: true,
+        });
+
         setSubmitStatus({
           type: 'success',
           message: result.message || 'Сообщение успешно отправлено!',
@@ -101,12 +110,31 @@ export const ContactForm: FC<ContactFormProps> = ({ trigger, variant = 'primary'
           setSubmitStatus({ type: null, message: '' });
         }, 2000);
       } else {
+        // Track failed form submission
+        trackFormSubmission('contact', {
+          form_type: 'contact',
+          source: 'contact_dialog',
+          success: false,
+          error_message: result.message || 'Unknown error',
+        });
+
+        trackError('Contact form submission failed', {
+          status_code: response.status,
+          error_message: result.message,
+        });
+
         setSubmitStatus({
           type: 'error',
           message: result.message || 'Произошла ошибка при отправке',
         });
       }
-    } catch {
+    } catch (error) {
+      // Track exception
+      trackError('Contact form exception', {
+        error_type: 'network_error',
+        error_message: error instanceof Error ? error.message : 'Unknown error',
+      });
+
       setSubmitStatus({
         type: 'error',
         message: 'Произошла ошибка при отправке. Попробуйте позже.',
