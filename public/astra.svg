@@ -1,0 +1,22 @@
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient background -->
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22d3ee;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)"/>
+  
+  <!-- Star/Astra symbol -->
+  <path d="M 50 20 L 55 40 L 75 40 L 60 52 L 65 72 L 50 60 L 35 72 L 40 52 L 25 40 L 45 40 Z" 
+        fill="white" opacity="0.9"/>
+  
+  <!-- Letter A -->
+  <text x="50" y="60" font-family="Arial, sans-serif" font-size="32" 
+        font-weight="bold" fill="white" text-anchor="middle" 
+        dominant-baseline="middle" opacity="0.8">A</text>
+</svg>

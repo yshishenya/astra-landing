@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors (from astra.png avatar) */
+    --color-primary: #22d3ee;
+    --color-primary-dark: #06b6d4;
+    --color-primary-light: #67e8f9;
+
+    /* Secondary Colors */
+    --color-secondary: #0ea5e9;
+    --color-secondary-dark: #0284c7;
+    --color-secondary-light: #38bdf8;
+
+    /* Accent Colors */
+    --color-accent: #2563eb;
+    --color-accent-dark: #1d4ed8;
+    --color-accent-light: #60a5fa;
+
+    /* AI/Tech Colors */
+    --color-purple: #7928ca;
+    --color-pink: #ff0080;
+    --color-dark-navy: #0a3157;
+
+    /* Neutral Colors */
+    --color-gray-50: #f9fafb;
+    --color-gray-600: #4b5563;
+    --color-gray-900: #111827;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 35%, #2563eb 70%, #7928ca 100%);
+    --gradient-cta: linear-gradient(90deg, #0ea5e9 0%, #22d3ee 100%);
+    --gradient-accent: linear-gradient(135deg, #7928ca 0%, #ff0080 100%);
+    --gradient-data: linear-gradient(180deg, #22d3ee 0%, rgba(34, 211, 238, 0.1) 100%);
+    --gradient-network: radial-gradient(circle at 50% 50%, rgba(34, 211, 238, 0.15) 0%, rgba(37, 99, 235, 0.05) 50%, rgba(10, 49, 87, 0.8) 100%);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --glass-blur: blur(20px);
+
+    /* AI Glow Effects */
+    --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.4), 0 0 40px rgba(34, 211, 238, 0.2), 0 0 60px rgba(34, 211, 238, 0.1);
+    --glow-blue: 0 0 20px rgba(37, 99, 235, 0.5);
+    --glow-purple: 0 0 20px rgba(121, 40, 202, 0.4);
+
+    /* Spacing Scale */
+    --spacing-section: 120px;
+    --spacing-section-mobile: 80px;
+    --spacing-component: 60px;
+    --spacing-component-mobile: 40px;
+    --spacing-element: 32px;
+    --spacing-element-mobile: 24px;
+  }
+
+  * {
+    @apply border-slate-200;
+  }
+
+  body {
+    @apply bg-white text-slate-900 antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Focus visible styles */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+}
+
+@layer components {
+  /* Container */
+  .container-custom {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section spacing */
+  .section-spacing {
+    @apply py-20 lg:py-32;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-cta {
+    background: var(--gradient-cta);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  /* Glass effect */
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/80 border border-white/20 shadow-xl;
+  }
+
+  /* Glassmorphic Card */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    /* Glassmorphism effect: outer shadow (8px blur, 32px spread) + inner highlight for depth */
+    /* rgba(31, 38, 135, 0.37) = dark blue shadow with 37% opacity */
+    /* rgba(255, 255, 255, 0.5) = white inner glow with 50% opacity for glass reflection */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    @apply rounded-2xl;
+  }
+
+  /* Glassmorphic Card with gradient border */
+  .glass-card-gradient {
+    /* Semi-transparent white background (8% opacity) for glass effect */
+    background: rgba(255, 255, 255, 0.08);
+    /* 25px blur for strong glassmorphism effect */
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    @apply rounded-2xl;
+  }
+
+  /* Gradient border effect using ::before pseudo-element */
+  .glass-card-gradient::before {
+    content: '';
+    position: absolute;
+    /* -2px inset to account for 2px border width */
+    inset: -2px;
+    border-radius: inherit;
+    /* 2px padding creates the border thickness */
+    padding: 2px;
+    /* Cyan to purple gradient for AI/tech aesthetic */
+    background: linear-gradient(135deg, #22d3ee, #7928ca);
+    /* Mask technique: creates border by cutting out the center */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* AI Glow Effects */
+  .ai-glow-cyan {
+    box-shadow: var(--glow-cyan);
+  }
+
+  .ai-glow-blue {
+    box-shadow: var(--glow-blue);
+  }
+
+  .ai-glow-purple {
+    box-shadow: var(--glow-purple);
+  }
+
+  /* Button base */
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-base font-semibold transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply btn-base text-white focus-visible:outline-primary shadow-lg;
+    background: var(--gradient-cta);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-blue), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-secondary {
+    @apply btn-base bg-secondary text-white hover:bg-secondary/90 focus-visible:outline-secondary shadow-md hover:shadow-lg;
+  }
+
+  .btn-outline {
+    @apply btn-base border-2 text-white focus-visible:outline-primary;
+    border-image: linear-gradient(135deg, #22d3ee, #7928ca) 1;
+    background: transparent;
+  }
+
+  .btn-outline:hover {
+    background: var(--gradient-cta);
+    border-color: transparent;
+  }
+
+  /* Card styles */
+  .card {
+    @apply rounded-lg border border-slate-200 bg-white p-6 shadow-md transition-all hover:shadow-lg;
+  }
+
+  .card-hover {
+    @apply card hover:scale-[1.02] hover:border-primary/50;
+  }
+}
+
+@layer utilities {
+  /* Text balance for headlines */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  :root {
+    --spacing-section: 80px;
+  }
+}
