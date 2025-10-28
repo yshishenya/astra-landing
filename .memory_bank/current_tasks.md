@@ -16,35 +16,18 @@
 - [x] [SETUP-05] Установка Framer Motion + Lenis
 - [x] [SETUP-06] Структура папок и компонентов
 - [x] [COMP-03] Базовая Hero Section с CTAs и статистикой
+- [x] [COMP-01] Layout: Header + Navigation (responsive) ✅
+- [x] [COMP-02] Layout: Footer с links ✅
+- [x] [COMP-04] Trust Bar с статистикой компаний ✅
+- [x] [COMP-05] Problem Statement (3 боли) ✅
 
 ---
 
 ## 🔄 In Progress - Phase 1: Foundation (Week 1-2)
 
-### Core Components (Layout)
-
-- [ ] [COMP-01] Layout: Header + Navigation (responsive)
-  - Logo + brand
-  - Navigation links (Features, Pricing, FAQ, Contact)
-  - Mobile menu (hamburger)
-  - Sticky header при scroll
-  - CTA button в header
-
-- [ ] [COMP-02] Layout: Footer с links
-  - 4-5 колонок ссылок (Product, Resources, Company, Legal, Social)
-  - Copyright
-  - Email + phone контакты
-  - Newsletter subscription
-
 ### Trust & Social Proof
 
-- [ ] [COMP-04] Trust Bar (логотипы клиентов)
-  - Infinite scroll carousel логотипов (или placeholders)
-  - Headline: "120+ компаний используют Астру"
-  - Grayscale логотипы, color на hover
-  - Auto-scroll 30s duration
-
-- [ ] [COMP-05] Problem Statement (3 боли)
+- [ ] [COMP-05-ENHANCE] Problem Statement (3 боли) - Enhancement options
   - 3 Pain Cards:
     1. "71% молодых говорят 'нет пути развития'"
     2. "2-3 часа на анализ одного резюме"

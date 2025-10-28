@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { Button } from '@/components/ui/button';
 import { Header } from '@/components/landing/header';
 import { Footer } from '@/components/landing/footer';
+import { TrustBar } from '@/components/landing/trust-bar';
+import { ProblemSection } from '@/components/landing/problem-section';
 import { HERO_HEADLINES, CTA_BUTTONS, STATS } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -63,7 +65,13 @@ export default function HomePage() {
           </div>
         </section>
 
-      {/* Other sections will be added progressively */}
+        {/* Trust Bar */}
+        <TrustBar />
+
+        {/* Problem Statement */}
+        <ProblemSection />
+
+        {/* Other sections will be added progressively */}
       </main>
       <Footer />
     </>
