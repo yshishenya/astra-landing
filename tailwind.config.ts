@@ -116,6 +116,7 @@ const config: Config = {
   			'slide-in-right': 'slideInRight 0.8s ease-out',
   			'scale-in': 'scaleIn 0.5s ease-out',
   			float: 'float 6s ease-in-out infinite',
+  			shimmer: 'shimmer 2s ease-in-out infinite',
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
   		},
@@ -190,6 +191,14 @@ const config: Config = {
   				},
   				to: {
   					height: '0'
+  				}
+  			},
+  			shimmer: {
+  				'0%': {
+  					transform: 'translateX(-100%)'
+  				},
+  				'100%': {
+  					transform: 'translateX(100%)'
   				}
   			}
   		}

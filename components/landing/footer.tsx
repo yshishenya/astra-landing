@@ -19,6 +19,7 @@ export function Footer() {
     ],
     company: [
       { label: 'О нас', href: '#' }, // TODO: Create /about page
+      { label: 'Кейсы', href: '/case-studies' },
       { label: 'Карьера', href: '#' }, // TODO: Create /careers page
       { label: 'Контакты', href: '#contact' },
       { label: 'Партнёры', href: '#' }, // TODO: Create /partners page
