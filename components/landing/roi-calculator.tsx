@@ -2,6 +2,7 @@
 
 import { type FC, useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -399,7 +400,41 @@ export const ROICalculatorSection: FC = () => {
 
           {/* Results Display */}
           <div className="space-y-6">
-            {roiResult ? (
+            {isCalculating ? (
+              /* Astra Loading Animation */
+              <Card className="p-12">
+                <div className="flex flex-col items-center justify-center space-y-6">
+                  {/* Astra Image with Glow */}
+                  <div className="relative">
+                    <div className="absolute -inset-6 rounded-full bg-gradient-to-br from-cyan-400/30 via-blue-500/30 to-purple-600/30 blur-2xl animate-pulse" />
+                    <Image
+                      src="/astra.png"
+                      alt="Astra анализирует данные"
+                      width={200}
+                      height={200}
+                      className="relative z-10 animate-float drop-shadow-2xl"
+                    />
+                  </div>
+
+                  {/* Loading Text */}
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      Astra анализирует ваши данные...
+                    </h3>
+                    <p className="text-gray-600">
+                      Рассчитываю экономию и ROI для вашей компании
+                    </p>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="w-full max-w-md">
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full animate-pulse" style={{ width: '60%' }} />
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            ) : roiResult ? (
               <>
                 {/* Key Metrics */}
                 <div className="grid gap-4 sm:grid-cols-2">
