@@ -108,6 +108,9 @@ const FEATURE_ICONS = [
   <Brain key="brain" className="h-12 w-12" />,
 ] as const;
 
+/**
+ * Renders the features section with parallax background effects and a grid of features.
+ */
 export const FeaturesSection: FC = () => {
   // Parallax effects for background decorative elements
   const bgParallax1 = useParallax({ speed: 0.2, enableOnMobile: false });
