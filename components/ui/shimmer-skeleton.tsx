@@ -7,13 +7,7 @@ interface ShimmerSkeletonProps {
 }
 
 /**
- * Shimmer Skeleton Component
- *
- * Provides a smooth shimmer animation effect for loading states.
- * More premium than simple pulse animation.
- *
- * @example
- * <ShimmerSkeleton className="h-[300px] rounded-lg" />
+ * ShimmerSkeleton component that provides a smooth shimmer animation effect for loading states.
  */
 export const ShimmerSkeleton: FC<ShimmerSkeletonProps> = ({
   className,
@@ -32,9 +26,7 @@ export const ShimmerSkeleton: FC<ShimmerSkeletonProps> = ({
 };
 
 /**
- * ROI Chart Skeleton Component
- *
- * Specialized skeleton for ROI charts with structure matching actual charts
+ * Renders a skeleton loading component for ROI charts.
  */
 export const ROIChartSkeleton: FC = () => {
   return (
