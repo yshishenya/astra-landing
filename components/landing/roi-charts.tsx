@@ -72,6 +72,9 @@ export const ROICharts: FC<ROIChartsProps> = ({
     { name: 'Экономия времени', value: timeSavings, fill: '#8b5cf6' },
   ];
 
+  /**
+   * Formats a number as currency in Russian Rubles.
+   */
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
@@ -81,6 +84,16 @@ export const ROICharts: FC<ROIChartsProps> = ({
     }).format(value);
   };
 
+  /**
+   * Formats a numeric value into a compact currency string.
+   *
+   * The function checks the value and formats it based on its size.
+   * If the value is one million or more, it divides by one million and appends "млн ₽".
+   * If the value is one thousand or more, it divides by one thousand and appends "тыс ₽".
+   * For values less than one thousand, it simply appends "₽" to the value.
+   *
+   * @param value - The numeric value to be formatted as currency.
+   */
   const formatCompactCurrency = (value: number): string => {
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(1)} млн ₽`;
