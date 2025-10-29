@@ -89,19 +89,12 @@ interface ROIResult {
 }
 
 /**
- * ROI Calculator Section Component
+ * ROI Calculator Section Component.
  *
- * Features:
- * - Interactive ROI calculation
- * - Real-time results display
- * - 4 key metrics visualization
- * - 3-year projection
- * - Recommended plan suggestion
+ * This component provides an interactive interface for calculating ROI based on user inputs. It handles the calculation of various metrics, including current turnover costs, cost savings, time savings, and provides a three-year projection. The component also tracks successful calculations and errors, ensuring a smooth user experience with real-time updates and visualizations.
  *
- * @example
- * ```tsx
- * <ROICalculatorSection />
- * ```
+ * @param {Object} props - The component props.
+ * @returns {JSX.Element} The rendered ROI Calculator Section.
  */
 export const ROICalculatorSection: FC = () => {
   const [isCalculating, setIsCalculating] = useState(false);
