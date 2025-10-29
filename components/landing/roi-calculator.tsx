@@ -9,25 +9,35 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { TrendingUp, Clock, DollarSign, Calendar } from 'lucide-react';
-import { FORM_CONTENT } from '@/lib/constants';
+import { FORM_CONTENT, ROI_CALCULATION_CONFIG } from '@/lib/constants';
 import { trackROICalculation, trackError } from '@/lib/analytics';
+import { ROICharts } from './roi-charts';
 
 // Validation schema (matching API validation)
 const roiSchema = z.object({
   companySize: z.coerce
     .number()
+    .finite('Некорректное число') // Prevents Infinity
+    .safe('Число слишком большое') // Prevents unsafe integers
     .min(10, 'Минимальное количество: 10')
     .max(100000, 'Максимальное количество: 100000'),
   currentTurnover: z.coerce
     .number()
-    .min(0, 'Текучка не может быть отрицательной')
-    .max(100, 'Текучка не может быть больше 100%'),
+    .finite('Некорректное число')
+    .safe('Число слишком большое')
+    .transform((val) => Math.round(val * 100) / 100) // Limit to 2 decimal places
+    .refine((val) => val >= 0, 'Текучка не может быть отрицательной')
+    .refine((val) => val <= 100, 'Текучка не может быть больше 100%'),
   averageSalary: z.coerce
     .number()
+    .finite('Некорректное число')
+    .safe('Число слишком большое')
     .min(30000, 'Минимальная зарплата: 30,000 руб')
     .optional(),
   currentHireTime: z.coerce
     .number()
+    .finite('Некорректное число')
+    .safe('Число слишком большое')
     .min(1, 'Минимальное время: 1 день')
     .max(365, 'Максимальное время: 365 дней')
     .optional(),
@@ -107,58 +117,124 @@ export const ROICalculatorSection: FC = () => {
 
   const watchedValues = watch();
 
-  const handleCalculate = useCallback(async (data: ROIFormValues) => {
+  // Client-side ROI calculation (no API calls needed)
+  const calculateROIClientSide = useCallback((data: ROIFormValues): ROIResult => {
+    const avgSalary = data.averageSalary || 100000;
+    // All calculation constants sourced from lib/constants.ts
+    const {
+      REPLACEMENT_COST_MULTIPLIER,
+      TURNOVER_REDUCTION,
+      TRADITIONAL_ANALYSIS_TIME,
+      ASTRA_ANALYSIS_TIME,
+      HOURLY_HR_COST,
+      BASIC_PLAN_ANNUAL,
+      PRO_PLAN_ANNUAL,
+      WORKING_DAYS_PER_YEAR,
+    } = ROI_CALCULATION_CONFIG;
+
+    // 1. Calculate current turnover costs
+    const annualTurnovers = Math.round((data.companySize * data.currentTurnover) / 100);
+    const replacementCostPerEmployee = avgSalary * REPLACEMENT_COST_MULTIPLIER;
+    const currentAnnualTurnoverCost = annualTurnovers * replacementCostPerEmployee;
+
+    // 2. Calculate cost savings from reduced turnover
+    const turnoverReduction = annualTurnovers * TURNOVER_REDUCTION;
+    const annualTurnoverSavings = turnoverReduction * replacementCostPerEmployee;
+
+    // 3. Calculate time savings for HR team
+    const employeesAnalyzedPerYear = Math.min(data.companySize * 0.3, 500);
+    const timeSavedPerEmployee = TRADITIONAL_ANALYSIS_TIME - ASTRA_ANALYSIS_TIME;
+    const totalTimeSavedHours = employeesAnalyzedPerYear * timeSavedPerEmployee;
+    const annualTimeSavings = totalTimeSavedHours * HOURLY_HR_COST;
+
+    // 4. Total annual savings
+    const totalAnnualSavings = annualTurnoverSavings + annualTimeSavings;
+
+    // 5. Determine recommended plan
+    const recommendedPlan: 'basic' | 'pro' = data.companySize < 200 ? 'basic' : 'pro';
+    const astraCost = recommendedPlan === 'basic' ? BASIC_PLAN_ANNUAL : PRO_PLAN_ANNUAL;
+
+    // 6. Calculate ROI
+    const netSavings = totalAnnualSavings - astraCost;
+    const roiMultiplier = totalAnnualSavings / astraCost;
+
+    // 7. Calculate payback period (in days)
+    const dailySavings = totalAnnualSavings / WORKING_DAYS_PER_YEAR;
+    const paybackDays = Math.ceil(astraCost / dailySavings);
+
+    // 8. Three-year projection
+    const threeYearSavings = totalAnnualSavings * 3;
+    const threeYearCost = astraCost * 3;
+    const threeYearNetSavings = threeYearSavings - threeYearCost;
+
+    return {
+      inputs: {
+        companySize: data.companySize,
+        currentTurnover: data.currentTurnover,
+        averageSalary: avgSalary,
+      },
+      currentSituation: {
+        annualTurnovers,
+        currentAnnualTurnoverCost,
+        replacementCostPerEmployee,
+      },
+      withAstra: {
+        turnoverReduction: Math.round(turnoverReduction),
+        annualTurnoverSavings: Math.round(annualTurnoverSavings),
+        employeesAnalyzedPerYear: Math.round(employeesAnalyzedPerYear),
+        totalTimeSavedHours: Math.round(totalTimeSavedHours),
+        annualTimeSavings: Math.round(annualTimeSavings),
+        totalAnnualSavings: Math.round(totalAnnualSavings),
+      },
+      roi: {
+        recommendedPlan,
+        astraCost,
+        netSavings: Math.round(netSavings),
+        roiPercentage: Math.round((netSavings / astraCost) * 100),
+        roiMultiplier: Math.round(roiMultiplier * 10) / 10,
+        paybackDays,
+        paybackWeeks: Math.ceil(paybackDays / 7),
+      },
+      threeYear: {
+        totalSavings: Math.round(threeYearSavings),
+        totalCost: threeYearCost,
+        netSavings: Math.round(threeYearNetSavings),
+      },
+    };
+  }, []);
+
+  const handleCalculate = useCallback((data: ROIFormValues) => {
     setIsCalculating(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/roi-calculator', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      const result = calculateROIClientSide(data);
+      setRoiResult(result);
+
+      // Track successful ROI calculation
+      trackROICalculation({
+        company_size: data.companySize,
+        current_turnover: data.currentTurnover,
+        average_salary: data.averageSalary || 100000,
+        roi_multiplier: result.roi.roiMultiplier,
+        payback_days: result.roi.paybackDays,
+        annual_savings: result.withAstra.totalAnnualSavings,
+        recommended_plan: result.roi.recommendedPlan,
+        turnover_reduction: result.withAstra.turnoverReduction,
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setRoiResult(result.data);
-
-        // Track successful ROI calculation
-        trackROICalculation({
-          company_size: data.companySize,
-          current_turnover: data.currentTurnover,
-          average_salary: data.averageSalary || 100000,
-          roi_multiplier: result.data.roi.roiMultiplier,
-          payback_days: result.data.roi.paybackDays,
-          annual_savings: result.data.withAstra.totalAnnualSavings,
-          recommended_plan: result.data.roi.recommendedPlan,
-          turnover_reduction: result.data.withAstra.turnoverReduction,
-        });
-      } else {
-        setError(result.message || 'Произошла ошибка при расчете');
-
-        // Track ROI calculation error
-        trackError('ROI calculation failed', {
-          company_size: data.companySize,
-          error_message: result.message,
-          status_code: response.status,
-        });
-      }
     } catch (error) {
       setError('Произошла ошибка при расчете. Попробуйте позже.');
 
       // Track exception
       trackError('ROI calculation exception', {
         company_size: data.companySize,
-        error_type: 'network_error',
+        error_type: 'calculation_error',
         error_message: error instanceof Error ? error.message : 'Unknown error',
       });
     } finally {
       setIsCalculating(false);
     }
-  }, []);
+  }, [calculateROIClientSide]);
 
   // Auto-calculate on input change (with debounce)
   useEffect(() => {
@@ -172,7 +248,7 @@ export const ROICalculatorSection: FC = () => {
       ) {
         handleCalculate(watchedValues);
       }
-    }, 500); // 500ms debounce
+    }, 1000); // 1 second debounce for smoother UX
 
     return () => clearTimeout(timeout);
   }, [watchedValues.companySize, watchedValues.currentTurnover, watchedValues.averageSalary, watchedValues, handleCalculate]);
@@ -375,6 +451,17 @@ export const ROICalculatorSection: FC = () => {
                     </p>
                   </Card>
                 </div>
+
+                {/* Charts Visualization */}
+                <ROICharts
+                  currentAnnualCost={roiResult.currentSituation.currentAnnualTurnoverCost}
+                  totalAnnualSavings={roiResult.withAstra.totalAnnualSavings}
+                  threeYearSavings={roiResult.threeYear.totalSavings}
+                  threeYearCost={roiResult.threeYear.totalCost}
+                  astraCost={roiResult.roi.astraCost}
+                  turnoverSavings={roiResult.withAstra.annualTurnoverSavings}
+                  timeSavings={roiResult.withAstra.annualTimeSavings}
+                />
 
                 {/* Detailed Breakdown */}
                 <Card className="p-6">

@@ -1,0 +1,72 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#F8FAFC"/>
+
+  <!-- Header -->
+  <rect width="800" height="64" fill="white"/>
+  <rect x="24" y="20" width="120" height="24" rx="4" fill="#0EA5E9"/>
+  <text x="40" y="38" font-family="Arial, sans-serif" font-size="16" font-weight="600" fill="white">Astra AI</text>
+
+  <!-- PDF Document -->
+  <rect x="160" y="104" width="480" height="456" rx="8" fill="white" stroke="#E2E8F0" stroke-width="2"/>
+
+  <!-- PDF Header -->
+  <rect x="160" y="104" width="480" height="80" rx="8" fill="linear-gradient(135deg, #0EA5E9 0%, #06B6D4 100%)"/>
+  <text x="400" y="140" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="white" text-anchor="middle">Карьерный Отчет</text>
+  <text x="400" y="168" font-family="Arial, sans-serif" font-size="16" fill="white" opacity="0.9" text-anchor="middle">Персональный анализ от Astra AI</text>
+
+  <!-- Content sections -->
+  <!-- Profile Section -->
+  <rect x="200" y="220" width="120" height="8" rx="4" fill="#0EA5E9"/>
+  <rect x="200" y="240" width="400" height="6" rx="3" fill="#E2E8F0"/>
+  <rect x="200" y="254" width="350" height="6" rx="3" fill="#E2E8F0"/>
+  <rect x="200" y="268" width="380" height="6" rx="3" fill="#E2E8F0"/>
+
+  <!-- Skills Chart -->
+  <rect x="200" y="300" width="150" height="8" rx="4" fill="#0EA5E9"/>
+
+  <!-- Skill bars -->
+  <g transform="translate(200, 320)">
+    <rect width="300" height="20" rx="10" fill="#F1F5F9"/>
+    <rect width="270" height="20" rx="10" fill="#10B981"/>
+    <text x="280" y="15" font-family="Arial, sans-serif" font-size="12" fill="#64748B">90%</text>
+  </g>
+
+  <g transform="translate(200, 350)">
+    <rect width="300" height="20" rx="10" fill="#F1F5F9"/>
+    <rect width="240" height="20" rx="10" fill="#3B82F6"/>
+    <text x="250" y="15" font-family="Arial, sans-serif" font-size="12" fill="#64748B">80%</text>
+  </g>
+
+  <g transform="translate(200, 380)">
+    <rect width="300" height="20" rx="10" fill="#F1F5F9"/>
+    <rect width="195" height="20" rx="10" fill="#F59E0B"/>
+    <text x="205" y="15" font-family="Arial, sans-serif" font-size="12" fill="#64748B">65%</text>
+  </g>
+
+  <!-- Recommendations -->
+  <rect x="200" y="420" width="180" height="8" rx="4" fill="#0EA5E9"/>
+
+  <g transform="translate(200, 440)">
+    <circle cx="8" cy="8" r="4" fill="#10B981"/>
+    <rect x="20" y="2" width="360" height="6" rx="3" fill="#E2E8F0"/>
+  </g>
+
+  <g transform="translate(200, 460)">
+    <circle cx="8" cy="8" r="4" fill="#10B981"/>
+    <rect x="20" y="2" width="320" height="6" rx="3" fill="#E2E8F0"/>
+  </g>
+
+  <g transform="translate(200, 480)">
+    <circle cx="8" cy="8" r="4" fill="#10B981"/>
+    <rect x="20" y="2" width="340" height="6" rx="3" fill="#E2E8F0"/>
+  </g>
+
+  <!-- Footer -->
+  <rect x="200" y="520" width="400" height="1" fill="#E2E8F0"/>
+  <text x="400" y="545" font-family="Arial, sans-serif" font-size="12" fill="#94A3B8" text-anchor="middle">Powered by Astra AI • Конфиденциально</text>
+
+  <!-- Download button -->
+  <rect x="680" y="510" width="80" height="36" rx="6" fill="#0EA5E9"/>
+  <text x="720" y="533" font-family="Arial, sans-serif" font-size="14" font-weight="600" fill="white" text-anchor="middle">↓ PDF</text>
+</svg>

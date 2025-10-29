@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import './globals.css';
 import { AnalyticsProvider } from '@/components/analytics-provider';
+import { SmoothScrollProvider } from '@/components/providers/smooth-scroll-provider';
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -103,7 +104,7 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${manrope.variable}`}>
       <body className="font-sans antialiased">
         <AnalyticsProvider />
-        {children}
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>
   );

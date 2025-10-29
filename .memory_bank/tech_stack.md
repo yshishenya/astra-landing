@@ -10,7 +10,7 @@
 
 ## Core Stack
 
-- **Framework:** Next.js 15.5.6 (App Router, React Server Components)
+- **Framework:** Next.js 16.0.1 (App Router, React Server Components)
 - **Language:** TypeScript 5.9.3 (strict mode enabled)
 - **Runtime:** Node.js 22+ (Vercel default, latest LTS)
 - **Styling:** Tailwind CSS v3.4.18
@@ -86,6 +86,45 @@
 **Heroicons** (Alternative)
 - Created by Tailwind team
 - Perfect Tailwind integration
+
+### Data Visualization
+
+**Recharts 3.3.0** (Primary for charts)
+- React-based charting library built on D3
+- Composable components approach
+- Built-in responsive design
+- TypeScript support
+- 100KB gzipped (~200KB uncompressed)
+
+**Why Recharts:**
+- Declarative API (React-friendly)
+- Supports common chart types: Line, Bar, Pie, Area, Composed
+- Animation support out of the box
+- Easy customization with Tailwind classes
+- Active maintenance and community
+
+**Use cases:**
+- ROI Calculator visualization
+- Metrics dashboard
+- Results projections (3-year forecasts)
+- Savings breakdown (pie charts)
+- Comparative bar charts
+
+**Alternative considered:**
+- Chart.js: Requires Canvas, less React-friendly
+- Victory: Larger bundle size (~250KB)
+- D3 directly: More flexible but requires more code
+
+**Bundle impact:** +200KB (minified) to client bundle
+**Recommendation:** Use code splitting for ROI calculator section to avoid loading charts on initial page load
+
+```tsx
+// Lazy load charts
+const ROICharts = dynamic(() => import('./roi-charts'), {
+  ssr: false,
+  loading: () => <ChartsSkeleton />
+});
+```
 
 ---
 
@@ -395,7 +434,7 @@ NEXT_PUBLIC_HOTJAR_ID=xxxxx
 ```json
 {
   "dependencies": {
-    "next": "^15.0.0",
+    "next": "^16.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "typescript": "^5.0.0",
@@ -410,6 +449,9 @@ NEXT_PUBLIC_HOTJAR_ID=xxxxx
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-dropdown-menu": "^2.0.0",
     "lucide-react": "^0.300.0",
+
+    // Data Visualization
+    "recharts": "^3.3.0",
 
     // Animations
     "framer-motion": "^11.0.0",
@@ -1048,10 +1090,13 @@ refactor: extract hero content to separate file
 ---
 
 **Last Updated:** 2025-10-29
-**Stack Version:** Next.js 15 + React 19 + TypeScript 5 + Tailwind v3
+**Stack Version:** Next.js 16 + React 19 + TypeScript 5 + Tailwind v3
 **Target Launch:** 6 weeks from start
 
 **Recent Additions:**
+- Next.js 16.0.1 upgrade (security patch) (2025-10-29)
+- Recharts 3.3.0 for data visualization (2025-10-29)
+- ROI Calculator constants documentation (2025-10-29)
 - Percy Visual Regression Testing (2025-10-29)
 - Schema.org Structured Data (2025-10-29)
 - Playwright E2E Tests (2025-10-28)

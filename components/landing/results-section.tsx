@@ -24,6 +24,15 @@ interface CounterProps {
   inView: boolean;
 }
 
+interface CircularProgressProps {
+  percentage: number;
+  size: number;
+  strokeWidth: number;
+  color: string;
+  inView: boolean;
+  delay: number;
+}
+
 const colorClasses: Record<ColorTheme, { bg: string; text: string; border: string; glow: string }> =
   {
     green: {
@@ -63,6 +72,72 @@ const colorClasses: Record<ColorTheme, { bg: string; text: string; border: strin
       glow: 'shadow-indigo-200/50',
     },
   };
+
+// Hex color mapping for CircularProgress SVG elements
+const CIRCULAR_PROGRESS_COLORS: Record<ColorTheme, string> = {
+  green: '#22c55e',
+  blue: '#3b82f6',
+  purple: '#a855f7',
+  orange: '#f97316',
+  teal: '#14b8a6',
+  indigo: '#6366f1',
+} as const;
+
+/**
+ * Circular progress indicator (radial progress bar)
+ */
+const CircularProgress: FC<CircularProgressProps> = ({
+  percentage,
+  size,
+  strokeWidth,
+  color,
+  inView,
+  delay,
+}) => {
+  const [progress, setProgress] = useState<number>(0);
+  const radius = (size - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const offset = circumference - (progress / 100) * circumference;
+
+  useEffect(() => {
+    if (!inView) return;
+
+    const timer = setTimeout(() => {
+      setProgress(percentage);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [inView, percentage, delay]);
+
+  return (
+    <svg width={size} height={size} className="transform -rotate-90">
+      {/* Background circle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke="#e2e8f0"
+        strokeWidth={strokeWidth}
+        fill="none"
+      />
+      {/* Progress circle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        fill="none"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        style={{
+          transition: 'stroke-dashoffset 2s ease-in-out',
+        }}
+      />
+    </svg>
+  );
+};
 
 /**
  * Animated counter component using requestAnimationFrame for smooth counting
@@ -155,25 +230,38 @@ const MetricCard: FC<MetricCardProps> = ({
 
       {/* Content */}
       <div className="relative z-10">
-        {/* Value */}
-        <motion.div
-          initial={prefersReducedMotion ? {} : { scale: 0.5, opacity: 0 }}
-          whileInView={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: prefersReducedMotion ? 0 : 0.5,
-            delay: prefersReducedMotion ? 0 : index * 0.1 + 0.2,
-          }}
-          className={`mb-4 text-6xl font-bold ${colors.text} md:text-7xl`}
-        >
-          <Counter
-            from={0}
-            to={value}
-            duration={prefersReducedMotion ? 0 : 2}
-            suffix={suffix}
+        {/* Radial Progress Indicator with Value */}
+        <div className="relative mx-auto mb-6 flex h-48 w-48 items-center justify-center">
+          {/* Background circle for radial progress */}
+          <CircularProgress
+            percentage={suffix === '%' ? value : Math.min(value, 100)}
+            size={192}
+            strokeWidth={12}
+            color={CIRCULAR_PROGRESS_COLORS[color]}
             inView={isInView}
+            delay={index * 100 + 200}
           />
-        </motion.div>
+
+          {/* Counter in the center */}
+          <motion.div
+            initial={prefersReducedMotion ? {} : { scale: 0.5, opacity: 0 }}
+            whileInView={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.5,
+              delay: prefersReducedMotion ? 0 : index * 0.1 + 0.2,
+            }}
+            className={`absolute text-5xl font-bold ${colors.text}`}
+          >
+            <Counter
+              from={0}
+              to={value}
+              duration={prefersReducedMotion ? 0 : 2}
+              suffix={suffix}
+              inView={isInView}
+            />
+          </motion.div>
+        </div>
 
         {/* Label */}
         <h3 className="mb-3 text-xl font-bold text-slate-900">{label}</h3>

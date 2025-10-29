@@ -30,10 +30,33 @@ export const HeroSection: FC = () => {
       aria-labelledby="hero-heading"
       className="gradient-hero section-spacing relative overflow-hidden"
     >
+      {/* Background Video */}
+      <div className="absolute inset-0 z-0" aria-hidden="true">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          onError={(e) => {
+            // Hide video element if it fails to load, gradient background will show
+            e.currentTarget.style.display = 'none';
+            console.warn('Hero background video failed to load, using gradient fallback');
+          }}
+          className="h-full w-full object-cover opacity-20"
+          poster="/images/screenshots/pdf-preview.svg"
+        >
+          <source src="/videos/hero-demo-optimized.mp4" type="video/mp4" />
+          <source src="/videos/hero-demo-optimized.webm" type="video/webm" />
+          {/* Fallback gradient background if video fails to load */}
+        </video>
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/60 via-primary/70 to-primary/80" />
+      </div>
+
       {/* AI Network Background Pattern */}
-      <div className="absolute inset-0 opacity-30" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.1)_0%,transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(37,99,235,0.1)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 z-0 opacity-20" aria-hidden="true">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.15)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(37,99,235,0.15)_0%,transparent_50%)]" />
       </div>
 
       <div className="container-custom relative z-10">
