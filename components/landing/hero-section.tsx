@@ -8,20 +8,7 @@ import { HERO_HEADLINES, HERO_SUBHEADLINE, CTA_BUTTONS, STATS, STATS_LABELS } fr
 import { trackCTAClick } from '@/lib/analytics';
 
 /**
- * Hero Section Component
- *
- * The main landing section with headline, CTAs, and stats
- *
- * Features:
- * - Primary and secondary CTA buttons with analytics tracking
- * - 3 key stats (analysis time, quality, ROI)
- * - Gradient background with animated patterns
- * - Glassmorphism effects on stat cards
- *
- * @example
- * ```tsx
- * <HeroSection />
- * ```
+ * Renders the Hero Section component with a headline, CTAs, and stats.
  */
 export const HeroSection: FC = () => {
   return (
