@@ -10,19 +10,6 @@ import { useParallax } from '@/hooks/use-parallax';
 
 /**
  * Hero Section Component
- *
- * The main landing section with headline, CTAs, and stats
- *
- * Features:
- * - Primary and secondary CTA buttons with analytics tracking
- * - 3 key stats (analysis time, quality, ROI)
- * - Gradient background with animated patterns
- * - Glassmorphism effects on stat cards
- *
- * @example
- * ```tsx
- * <HeroSection />
- * ```
  */
 export const HeroSection: FC = () => {
   // Parallax effects for background elements (different speeds create depth)
