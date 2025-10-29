@@ -96,6 +96,11 @@ export const TawkChat: FC = () => {
   const widgetId = getTawkWidgetId();
   const isEnabled = isTawkEnabled();
 
+  // Debug logging
+  console.log('[Tawk.to Debug] Property ID:', propertyId);
+  console.log('[Tawk.to Debug] Widget ID:', widgetId);
+  console.log('[Tawk.to Debug] Is Enabled:', isEnabled);
+
   // Don't render if not configured
   if (!isEnabled || !propertyId || !widgetId) {
     if (process.env.NODE_ENV === 'development') {
@@ -106,35 +111,27 @@ export const TawkChat: FC = () => {
     return null;
   }
 
+  console.log('[Tawk.to] Component rendering with credentials');
+
   return (
     <>
-      {/* Tawk.to Widget Script */}
+      {/* Tawk.to Widget Script with Event Tracking */}
       <Script
         id="tawk-to-chat"
-        strategy="lazyOnload"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
+            // Initialize Tawk_API before loading the widget
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-              s1.async=true;
-              s1.src='https://embed.tawk.to/${propertyId}/${widgetId}';
-              s1.charset='UTF-8';
-              s1.setAttribute('crossorigin','*');
-              s0.parentNode.insertBefore(s1,s0);
-            })();
-          `,
-        }}
-      />
 
-      {/* Tawk.to API Customization and Event Tracking */}
-      <Script
-        id="tawk-to-config"
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
-            // Tawk.to API callbacks for event tracking
-            var Tawk_API = Tawk_API || {};
+            // Set up event callbacks BEFORE widget loads
+            Tawk_API.onLoad = function() {
+              ${
+                process.env.NODE_ENV === 'development'
+                  ? `console.log('[Tawk.to] Widget loaded and ready');`
+                  : ''
+              }
+            };
 
             // Called when visitor opens the chat window
             Tawk_API.onChatStarted = function() {
@@ -215,12 +212,22 @@ export const TawkChat: FC = () => {
             ${
               process.env.NODE_ENV === 'development'
                 ? `
-                  console.log('[Tawk.to] Initialized');
+                  console.log('[Tawk.to] Initializing widget...');
                   console.log('[Tawk.to] Property ID: ${propertyId}');
                   console.log('[Tawk.to] Widget ID: ${widgetId}');
                 `
                 : ''
             }
+
+            // Load the Tawk.to widget script (AFTER callbacks are defined)
+            (function(){
+              var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+              s1.async=true;
+              s1.src='https://embed.tawk.to/${propertyId}/${widgetId}';
+              s1.charset='UTF-8';
+              s1.setAttribute('crossorigin','*');
+              s0.parentNode.insertBefore(s1,s0);
+            })();
           `,
         }}
       />
