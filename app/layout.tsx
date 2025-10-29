@@ -95,6 +95,9 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Renders the root layout of the application with analytics and smooth scrolling.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
