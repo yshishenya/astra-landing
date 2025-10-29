@@ -44,16 +44,36 @@ export const SmoothScrollProvider: FC<SmoothScrollProviderProps> = ({ children }
       touchMultiplier: 2, // Touch scroll multiplier
     });
 
+    // Store RAF ID for cleanup and pause/resume
+    let rafId: number;
+
     // Request Animation Frame for smooth scrolling
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    // Pause RAF when page is hidden to save battery and CPU
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Page is hidden (user switched tabs) - cancel RAF to save resources
+        cancelAnimationFrame(rafId);
+      } else {
+        // Page is visible again - resume RAF loop
+        rafId = requestAnimationFrame(raf);
+      }
+    };
+
+    // Start RAF loop
+    rafId = requestAnimationFrame(raf);
+
+    // Listen for visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Cleanup on unmount
     return () => {
+      cancelAnimationFrame(rafId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       lenis.destroy();
     };
   }, []);
