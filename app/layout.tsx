@@ -3,6 +3,9 @@ import { Inter, Manrope } from 'next/font/google';
 import './globals.css';
 import { AnalyticsProvider } from '@/components/analytics-provider';
 import { SmoothScrollProvider } from '@/components/providers/smooth-scroll-provider';
+import { TawkChat } from '@/components/marketing/tawk-chat';
+import { StickyCTABar } from '@/components/marketing/sticky-cta-bar';
+import { ExitIntentPopup } from '@/components/marketing/exit-intent-popup';
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -104,7 +107,12 @@ export default function RootLayout({
     <html lang="ru" className={`${inter.variable} ${manrope.variable}`}>
       <body className="font-sans antialiased">
         <AnalyticsProvider />
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SmoothScrollProvider>
+          {children}
+          <StickyCTABar />
+        </SmoothScrollProvider>
+        <TawkChat />
+        <ExitIntentPopup />
       </body>
     </html>
   );

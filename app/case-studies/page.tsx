@@ -125,9 +125,7 @@ export default function CaseStudiesPage() {
                 {/* Content */}
                 <div className="lg:w-3/5">
                   <Card className="p-8">
-                    <h2 className="mb-6 text-3xl font-bold text-gray-900">
-                      {caseStudy.title}
-                    </h2>
+                    <h2 className="mb-6 text-3xl font-bold text-gray-900">{caseStudy.title}</h2>
 
                     {/* Challenge */}
                     <div className="mb-8">
@@ -169,31 +167,34 @@ export default function CaseStudiesPage() {
 
                       {/* Metrics */}
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                        {caseStudy.results.metrics.map((metric, metricIdx) => (
-                          <div
-                            key={metricIdx}
-                            className={`rounded-lg p-4 text-center ${
-                              metric.highlight
-                                ? 'bg-gradient-to-br from-green-50 to-green-100 ring-2 ring-green-500'
-                                : 'bg-gray-50'
-                            }`}
-                          >
+                        {caseStudy.results.metrics.map((metric, metricIdx) => {
+                          const isHighlighted = 'highlight' in metric && metric.highlight;
+                          return (
                             <div
-                              className={`mb-2 text-2xl font-bold ${
-                                metric.highlight ? 'text-green-700' : 'text-gray-900'
+                              key={metricIdx}
+                              className={`rounded-lg p-4 text-center ${
+                                isHighlighted
+                                  ? 'bg-gradient-to-br from-green-50 to-green-100 ring-2 ring-green-500'
+                                  : 'bg-gray-50'
                               }`}
                             >
-                              {metric.value}
+                              <div
+                                className={`mb-2 text-2xl font-bold ${
+                                  isHighlighted ? 'text-green-700' : 'text-gray-900'
+                                }`}
+                              >
+                                {metric.value}
+                              </div>
+                              <div
+                                className={`text-sm ${
+                                  isHighlighted ? 'text-green-700' : 'text-gray-600'
+                                }`}
+                              >
+                                {metric.label}
+                              </div>
                             </div>
-                            <div
-                              className={`text-sm ${
-                                metric.highlight ? 'text-green-700' : 'text-gray-600'
-                              }`}
-                            >
-                              {metric.label}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 

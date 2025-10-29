@@ -696,6 +696,31 @@ export const FORM_CONTENT = {
 } as const;
 
 /**
+ * Sticky CTA Bar Content
+ * Bottom-fixed CTA bar that appears on scroll
+ */
+export const STICKY_CTA_CONTENT = {
+  text: 'Готовы построить культуру развития?',
+  primaryButton: 'Начать бесплатно',
+  secondaryButton: 'Запланировать демо',
+  ariaLabel: 'Панель призыва к действию',
+  screenReaderAnnouncement: 'Появилась панель с призывом к действию',
+} as const;
+
+/**
+ * Exit Intent Popup Content
+ * Lead magnet offer shown when user is about to leave
+ */
+export const EXIT_POPUP_CONTENT = {
+  headline: 'Подождите! Получите бесплатный чеклист',
+  subheadline: '5 проверенных способов снизить текучку кадров на 15-20%',
+  emailPlaceholder: 'Ваш email',
+  buttonText: 'Получить чеклист',
+  successMessage: 'Спасибо! Проверьте email',
+  privacyNote: 'Мы не передаем ваши данные третьим лицам',
+} as const;
+
+/**
  * Case Studies Data
  * Detailed success stories from real companies
  */
