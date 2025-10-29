@@ -2,11 +2,10 @@
 
 import { type FC } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import { TESTIMONIALS, STATS, TESTIMONIALS_SECTION } from '@/lib/constants';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useParallax, useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 interface TestimonialCardProps {
   quote: string;
@@ -29,16 +28,20 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
   avatar,
   index,
 }) => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref: cardRef, isInView: cardInView } = useScrollTrigger({ threshold: 0.1 });
+
+  // Stagger delays for 3 cards: 0ms, 150ms, 300ms
+  const cardDelay = index === 0 ? '' : `animate-delay-${index * 150}`;
 
   return (
-    <motion.div
-      initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-      whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : index * 0.15 }}
-      whileHover={prefersReducedMotion ? {} : { y: -8, scale: 1.02 }}
-      className="flex h-full flex-col rounded-lg bg-white p-8 shadow-md transition-all hover:shadow-xl"
+    <div
+      ref={cardRef}
+      className={cn(
+        'flex h-full flex-col rounded-lg bg-white p-8 shadow-md transition-all hover:shadow-xl',
+        'hover-lift-small animate-on-scroll',
+        cardInView && 'animate-fade-in-up',
+        cardInView && cardDelay
+      )}
     >
       {/* Quote Icon */}
       <div className="mb-4 flex items-start justify-between">
@@ -86,12 +89,14 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
           <div className="text-xs text-slate-500">{companySize}</div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
 export const TestimonialsSection: FC = () => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: statsRef, isInView: statsInView } = useScrollTrigger({ threshold: 0.1 });
 
   // Parallax effects for background decorative elements
   const bgParallax1 = useParallax({ speed: 0.15, enableOnMobile: false });
@@ -124,34 +129,37 @@ export const TestimonialsSection: FC = () => {
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <motion.h2
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+          <h2
+            ref={headingRef}
             id="testimonials-heading"
-            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+            className={cn(
+              'mb-4 text-4xl font-bold text-slate-900 md:text-5xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             {TESTIMONIALS_SECTION.heading}
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
-            className="mx-auto mb-8 max-w-3xl text-xl text-slate-600"
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mx-auto mb-8 max-w-3xl text-xl text-slate-600',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             {TESTIMONIALS_SECTION.subheading}
-          </motion.p>
+          </p>
 
           {/* Stats Bar */}
-          <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 }}
-            className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 p-6"
+          <div
+            ref={statsRef}
+            className={cn(
+              'mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-8 rounded-lg bg-gradient-to-r from-primary/5 to-secondary/5 p-6',
+              'animate-on-scroll',
+              statsInView && 'animate-fade-in-up animate-delay-200'
+            )}
           >
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{STATS.companies}</div>
@@ -167,7 +175,7 @@ export const TestimonialsSection: FC = () => {
               <div className="text-3xl font-bold text-primary">{STATS.quality}</div>
               <div className="text-sm text-slate-600">{TESTIMONIALS_SECTION.statsLabels.quality}</div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Testimonials Grid */}

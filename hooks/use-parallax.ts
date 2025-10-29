@@ -23,6 +23,8 @@ interface UseParallaxOptions {
 export function useParallax({ speed = 0.5, enableOnMobile = false }: UseParallaxOptions = {}) {
   const [transform, setTransform] = useState<string>('translateY(0px)');
   const ref = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number>(0);
+  const lastUpdateRef = useRef<number>(0);
 
   useEffect(() => {
     // Check if reduced motion is preferred
@@ -32,8 +34,21 @@ export function useParallax({ speed = 0.5, enableOnMobile = false }: UseParallax
     // Check if mobile and parallax is disabled on mobile
     if (!enableOnMobile && window.innerWidth < 768) return;
 
-    const handleScroll = () => {
+    // PERFORMANCE: Throttle parallax updates to 20fps (50ms) instead of 60fps
+    const THROTTLE_MS = 50;
+    let ticking = false;
+
+    const updateTransform = () => {
       if (!ref.current) return;
+
+      const now = performance.now();
+      const timeSinceLastUpdate = now - lastUpdateRef.current;
+
+      // Throttle: Only update every THROTTLE_MS
+      if (timeSinceLastUpdate < THROTTLE_MS) {
+        ticking = false;
+        return;
+      }
 
       const rect = ref.current.getBoundingClientRect();
       const scrolled = window.scrollY;
@@ -45,16 +60,29 @@ export function useParallax({ speed = 0.5, enableOnMobile = false }: UseParallax
         const offset = (scrolled - elementTop + windowHeight) * speed;
         setTransform(`translateY(${offset}px)`);
       }
+
+      lastUpdateRef.current = now;
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafRef.current = requestAnimationFrame(updateTransform);
+      }
     };
 
     // Initial calculation
-    handleScroll();
+    updateTransform();
 
     // Add scroll listener with passive flag for better performance
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [speed, enableOnMobile]);
 

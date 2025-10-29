@@ -1,14 +1,14 @@
 'use client';
 
 import { type FC } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, ArrowRight, Calendar, MessageSquare } from 'lucide-react';
 import { FINAL_CTA, STATS } from '@/lib/constants';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useScrollTrigger } from '@/hooks/use-parallax';
 import { DemoForm } from './demo-form';
 import { ContactForm } from './contact-form';
 import { trackCTAClick } from '@/lib/analytics';
+import { cn } from '@/lib/utils';
 
 /**
  * Trust badge item interface
@@ -24,21 +24,26 @@ interface TrustBadgeProps {
  * Displays a trust indicator with icon and text
  */
 const TrustBadge: FC<TrustBadgeProps> = ({ icon, text, index }) => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref, isInView } = useScrollTrigger({ threshold: 0.1 });
+
+  // Stagger delays: 0ms, 100ms, 200ms (3 badges)
+  const delay = index === 0 ? '' : `animate-delay-${index * 100}`;
 
   return (
-    <motion.div
-      initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-      whileInView={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : index * 0.1 }}
-      className="flex items-center gap-3"
+    <div
+      ref={ref}
+      className={cn(
+        'flex items-center gap-3',
+        'animate-on-scroll',
+        isInView && 'animate-fade-in-left',
+        isInView && delay
+      )}
     >
       <div className="flex-shrink-0 text-white/90" aria-hidden="true">
         {icon}
       </div>
       <span className="text-base font-medium text-white/90 md:text-lg">{text}</span>
-    </motion.div>
+    </div>
   );
 };
 
@@ -48,7 +53,12 @@ const TrustBadge: FC<TrustBadgeProps> = ({ icon, text, index }) => {
  * Includes trust badges and compelling copy to drive conversions
  */
 export const FinalCTASection: FC = () => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: buttonsRef, isInView: buttonsInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: badgesRef, isInView: badgesInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: statsRef, isInView: statsInView } = useScrollTrigger({ threshold: 0.1 });
+
   const trustBadges = FINAL_CTA.trustBadges.map((badge) => ({
     icon: <CheckCircle2 className="h-6 w-6" />,
     text: badge.text,
@@ -66,94 +76,60 @@ export const FinalCTASection: FC = () => {
         <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-white blur-3xl" />
       </div>
 
-      {/* Animated gradient orbs */}
-      <motion.div
-        initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
-        animate={prefersReducedMotion ? {} : { opacity: 0.1, scale: 1 }}
-        transition={
-          prefersReducedMotion
-            ? {}
-            : { duration: 2, repeat: Infinity, repeatType: 'reverse' }
-        }
-        className="absolute -left-1/4 top-0 h-[600px] w-[600px] rounded-full bg-white blur-3xl"
+      {/* Animated gradient orbs with CSS infinite animation */}
+      <div
+        className="absolute -left-1/4 top-0 h-[600px] w-[600px] rounded-full bg-white blur-3xl animate-pulse-orb"
         aria-hidden="true"
       />
-      <motion.div
-        initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
-        animate={prefersReducedMotion ? {} : { opacity: 0.1, scale: 1 }}
-        transition={
-          prefersReducedMotion
-            ? {}
-            : { duration: 2, delay: 1, repeat: Infinity, repeatType: 'reverse' }
-        }
-        className="absolute -right-1/4 bottom-0 h-[600px] w-[600px] rounded-full bg-white blur-3xl"
+      <div
+        className="absolute -right-1/4 bottom-0 h-[600px] w-[600px] rounded-full bg-white blur-3xl animate-pulse-orb-delayed"
         aria-hidden="true"
       />
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
           {/* Headline */}
-          <motion.h2
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+          <h2
+            ref={headingRef}
             id="final-cta-heading"
-            className="mb-6 text-4xl font-bold text-white md:text-5xl lg:text-6xl"
+            className={cn(
+              'mb-6 text-4xl font-bold text-white md:text-5xl lg:text-6xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             {FINAL_CTA.headline}
-          </motion.h2>
+          </h2>
 
           {/* Subheadline */}
-          <motion.p
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
-            className="mb-12 text-xl text-white/90 md:text-2xl"
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mb-12 text-xl text-white/90 md:text-2xl',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             {FINAL_CTA.subheadline}
-          </motion.p>
+          </p>
 
           {/* CTA Buttons */}
-          <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 }}
-            className="mb-12 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6"
+          <div
+            ref={buttonsRef}
+            className={cn(
+              'mb-12 flex flex-col items-center justify-center gap-4 md:flex-row md:gap-6',
+              'animate-on-scroll',
+              buttonsInView && 'animate-fade-in-up animate-delay-200'
+            )}
           >
             {/* Primary CTA - Demo Form */}
-            <motion.div
-              whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
-              whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-              animate={
-                prefersReducedMotion
-                  ? {}
-                  : {
-                      boxShadow: [
-                        '0 0 20px rgba(255, 255, 255, 0.3)',
-                        '0 0 40px rgba(255, 255, 255, 0.5)',
-                        '0 0 20px rgba(255, 255, 255, 0.3)',
-                      ],
-                    }
-              }
-              transition={
-                prefersReducedMotion
-                  ? {}
-                  : {
-                      boxShadow: { duration: 2, repeat: Infinity },
-                      scale: { duration: 0.2 },
-                    }
-              }
-              className="rounded-lg"
-            >
+            <div className="rounded-lg animate-pulse-shadow">
               <DemoForm
                 trigger={
                   <Button
                     size="lg"
                     variant="accent"
-                    className="group relative overflow-hidden bg-white text-lg font-bold text-primary shadow-2xl hover:bg-white/95"
+                    className="group relative overflow-hidden bg-white text-lg font-bold text-primary shadow-2xl hover:bg-white/95 hover:scale-105 active:scale-95 transition-transform"
                     onClick={() => trackCTAClick('start_trial', 'final_cta', { button_text: FINAL_CTA.buttons.primary.text })}
                   >
                     {FINAL_CTA.buttons.primary.text}
@@ -164,19 +140,16 @@ export const FinalCTASection: FC = () => {
                   </Button>
                 }
               />
-            </motion.div>
+            </div>
 
             {/* Secondary CTA - Demo Form */}
-            <motion.div
-              whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
-              whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-            >
+            <div>
               <DemoForm
                 trigger={
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-2 border-white bg-transparent text-lg font-semibold text-white hover:bg-white hover:text-primary"
+                    className="border-2 border-white bg-transparent text-lg font-semibold text-white hover:bg-white hover:text-primary hover:scale-105 active:scale-95 transition-transform"
                     onClick={() => trackCTAClick('book_demo', 'final_cta', { button_text: FINAL_CTA.buttons.secondary.text })}
                   >
                     <Calendar className="mr-2 h-5 w-5" aria-hidden="true" />
@@ -184,19 +157,16 @@ export const FinalCTASection: FC = () => {
                   </Button>
                 }
               />
-            </motion.div>
+            </div>
 
             {/* Tertiary CTA - Contact Form */}
-            <motion.div
-              whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
-              whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
-            >
+            <div>
               <ContactForm
                 trigger={
                   <Button
                     size="lg"
                     variant="link"
-                    className="text-lg font-semibold text-white underline-offset-4 hover:text-white/90"
+                    className="text-lg font-semibold text-white underline-offset-4 hover:text-white/90 hover:scale-105 active:scale-95 transition-transform"
                     onClick={() => trackCTAClick('contact_us', 'final_cta', { button_text: FINAL_CTA.buttons.tertiary.text })}
                   >
                     <MessageSquare className="mr-2 h-5 w-5" aria-hidden="true" />
@@ -204,29 +174,31 @@ export const FinalCTASection: FC = () => {
                   </Button>
                 }
               />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Trust Badges */}
-          <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.3 }}
-            className="flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12"
+          <div
+            ref={badgesRef}
+            className={cn(
+              'flex flex-col items-center justify-center gap-6 md:flex-row md:gap-12',
+              'animate-on-scroll',
+              badgesInView && 'animate-fade-in-up animate-delay-300'
+            )}
           >
             {trustBadges.map((badge, index) => (
               <TrustBadge key={index} icon={badge.icon} text={badge.text} index={index} />
             ))}
-          </motion.div>
+          </div>
 
           {/* Social Proof Stats */}
-          <motion.div
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.4 }}
-            className="mt-12 border-t border-white/20 pt-8"
+          <div
+            ref={statsRef}
+            className={cn(
+              'mt-12 border-t border-white/20 pt-8',
+              'animate-on-scroll',
+              statsInView && 'animate-fade-in-up animate-delay-400'
+            )}
           >
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
               <div>
@@ -242,7 +214,7 @@ export const FinalCTASection: FC = () => {
                 <div className="text-base text-white/80">Возврат инвестиций</div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

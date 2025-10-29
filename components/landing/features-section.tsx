@@ -1,10 +1,10 @@
 'use client';
 
 import { type FC } from 'react';
-import { motion } from 'framer-motion';
 import { Target, Grid3x3, Users, Calendar, Star, Brain } from 'lucide-react';
 import { FEATURES } from '@/lib/constants';
-import { useParallax } from '@/hooks/use-parallax';
+import { useParallax, useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 type ColorTheme = 'green' | 'blue' | 'purple' | 'orange' | 'teal' | 'indigo';
 
@@ -58,29 +58,38 @@ const FeatureCard: FC<FeatureCardProps> = ({
   color,
   index,
 }) => {
+  const { ref: cardRef, isInView: cardInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: iconRef, isInView: iconInView } = useScrollTrigger({ threshold: 0.1 });
   const colors = colorClasses[color];
 
+  // Stagger delays: 0ms, 100ms, 200ms, 300ms, 400ms, 500ms (6 cards)
+  const cardDelay = index === 0 ? '' : `animate-delay-${index * 100}`;
+  const iconDelay = index === 0 ? 'animate-delay-200' : `animate-delay-${index * 100 + 200}`;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ y: -8 }}
-      className="rounded-lg bg-white p-8 shadow-md transition-shadow hover:shadow-xl"
+    <div
+      ref={cardRef}
+      className={cn(
+        'rounded-lg bg-white p-8 shadow-md transition-shadow hover:shadow-xl',
+        'hover-lift animate-on-scroll',
+        cardInView && 'animate-fade-in-up',
+        cardInView && cardDelay
+      )}
     >
       {/* Icon Container */}
-      <motion.div
-        initial={{ scale: 0, rotate: -180 }}
-        whileInView={{ scale: 1, rotate: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.1 + 0.2, type: 'spring' }}
-        className={`mb-6 flex h-20 w-20 items-center justify-center rounded-lg ${colors.iconBg}`}
+      <div
+        ref={iconRef}
+        className={cn(
+          `mb-6 flex h-20 w-20 items-center justify-center rounded-lg ${colors.iconBg}`,
+          'animate-on-scroll',
+          iconInView && 'animate-scale-rotate-in',
+          iconInView && iconDelay
+        )}
       >
         <div className={colors.text} aria-hidden="true">
           {icon}
         </div>
-      </motion.div>
+      </div>
 
       {/* Title */}
       <h3 className="mb-3 text-2xl font-bold text-slate-900">{title}</h3>
@@ -95,7 +104,7 @@ const FeatureCard: FC<FeatureCardProps> = ({
           {example}
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -112,6 +121,9 @@ export const FeaturesSection: FC = () => {
   // Parallax effects for background decorative elements
   const bgParallax1 = useParallax({ speed: 0.2, enableOnMobile: false });
   const bgParallax2 = useParallax({ speed: 0.4, enableOnMobile: false });
+
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
 
   return (
     <section
@@ -136,26 +148,28 @@ export const FeaturesSection: FC = () => {
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
+          <h2
+            ref={headingRef}
             id="features-heading"
-            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+            className={cn(
+              'mb-4 text-4xl font-bold text-slate-900 md:text-5xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             6 Методов Анализа в Один Клик
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mx-auto max-w-3xl text-xl text-slate-600"
+          </h2>
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mx-auto max-w-3xl text-xl text-slate-600',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             Комплексный анализ, который обычно требует недель работы с психологами и
             карьерными консультантами
-          </motion.p>
+          </p>
         </div>
 
         {/* Features Grid */}

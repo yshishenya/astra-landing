@@ -1,7 +1,6 @@
 'use client';
 
 import { type FC } from 'react';
-import { motion } from 'framer-motion';
 import {
   Accordion,
   AccordionContent,
@@ -9,7 +8,8 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { FAQ_ITEMS } from '@/lib/constants';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 /**
  * FAQ Section Component
@@ -17,7 +17,10 @@ import { useReducedMotion } from '@/hooks/use-reduced-motion';
  * Uses shadcn/ui Accordion with Radix UI primitives for full keyboard navigation
  */
 export const FAQSection: FC = () => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: accordionRef, isInView: accordionInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: ctaRef, isInView: ctaInView } = useScrollTrigger({ threshold: 0.1 });
 
   return (
     <section
@@ -28,34 +31,37 @@ export const FAQSection: FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12 text-center md:mb-16">
-          <motion.h2
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+          <h2
+            ref={headingRef}
             id="faq-heading"
-            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+            className={cn(
+              'mb-4 text-4xl font-bold text-slate-900 md:text-5xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             Часто задаваемые вопросы
-          </motion.h2>
-          <motion.p
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
-            className="mx-auto max-w-3xl text-lg text-slate-600 md:text-xl"
+          </h2>
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mx-auto max-w-3xl text-lg text-slate-600 md:text-xl',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             Всё, что нужно знать о работе с Astra
-          </motion.p>
+          </p>
         </div>
 
         {/* FAQ Accordion */}
-        <motion.div
-          initial={prefersReducedMotion ? {} : { opacity: 0, y: 30 }}
-          whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.2 }}
-          className="mx-auto max-w-4xl"
+        <div
+          ref={accordionRef}
+          className={cn(
+            'mx-auto max-w-4xl',
+            'animate-on-scroll',
+            accordionInView && 'animate-fade-in-up animate-delay-200'
+          )}
         >
           <Accordion
             type="single"
@@ -78,15 +84,16 @@ export const FAQSection: FC = () => {
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </div>
 
         {/* Additional CTA */}
-        <motion.div
-          initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-          whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.3 }}
-          className="mt-12 text-center md:mt-16"
+        <div
+          ref={ctaRef}
+          className={cn(
+            'mt-12 text-center md:mt-16',
+            'animate-on-scroll',
+            ctaInView && 'animate-fade-in-up animate-delay-300'
+          )}
         >
           <p className="text-lg text-slate-600">
             Остались вопросы?{' '}
@@ -97,7 +104,7 @@ export const FAQSection: FC = () => {
               Свяжитесь с нами
             </a>
           </p>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

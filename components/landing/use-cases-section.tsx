@@ -2,11 +2,10 @@
 
 import { type FC } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { TrendingUp, Users, Building, UserPlus, Check } from 'lucide-react';
 import { USE_CASES, USE_CASES_SECTION } from '@/lib/constants';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { useParallax, useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 type ColorTheme = 'green' | 'blue' | 'purple' | 'orange';
 
@@ -86,17 +85,23 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
   color,
   index,
 }) => {
+  const { ref: cardRef, isInView: cardInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: iconRef, isInView: iconInView } = useScrollTrigger({ threshold: 0.1 });
   const colors = colorClasses[color];
-  const prefersReducedMotion = useReducedMotion();
+
+  // Stagger delays for 4 cards: 0ms, 150ms, 300ms, 450ms
+  const cardDelay = index === 0 ? '' : `animate-delay-${index * 150}`;
+  const iconDelay = index === 0 ? 'animate-delay-200' : `animate-delay-${index * 150 + 200}`;
 
   return (
-    <motion.article
-      initial={prefersReducedMotion ? {} : { opacity: 0, y: 50 }}
-      whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : index * 0.15 }}
-      whileHover={prefersReducedMotion ? {} : { y: -12, scale: 1.02 }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 ${colors.border} bg-white shadow-lg transition-all hover:shadow-2xl`}
+    <article
+      ref={cardRef}
+      className={cn(
+        `group relative flex flex-col overflow-hidden rounded-2xl border-2 ${colors.border} bg-white shadow-lg transition-all hover:shadow-2xl`,
+        'hover-lift-scale animate-on-scroll',
+        cardInView && 'animate-fade-in-up',
+        cardInView && cardDelay
+      )}
     >
       {/* Background Illustration */}
       <div className="absolute right-0 top-0 h-48 w-48 opacity-5 transition-opacity group-hover:opacity-10">
@@ -111,20 +116,17 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
 
       {/* Icon Container */}
       <div className={`relative p-8 pb-0`}>
-        <motion.div
-          initial={prefersReducedMotion ? {} : { scale: 0, rotate: -180 }}
-          whileInView={prefersReducedMotion ? {} : { scale: 1, rotate: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: prefersReducedMotion ? 0 : 0.6,
-            delay: prefersReducedMotion ? 0 : index * 0.15 + 0.2,
-            type: prefersReducedMotion ? undefined : 'spring',
-            stiffness: prefersReducedMotion ? undefined : 200,
-          }}
-          className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl ${colors.iconBg} transition-transform group-hover:scale-110`}
+        <div
+          ref={iconRef}
+          className={cn(
+            `mb-6 inline-flex h-16 w-16 items-center justify-center rounded-xl ${colors.iconBg} transition-transform group-hover:scale-110`,
+            'animate-on-scroll',
+            iconInView && 'animate-scale-rotate-in',
+            iconInView && iconDelay
+          )}
         >
           <div className={colors.text}>{icon}</div>
-        </motion.div>
+        </div>
 
         {/* Title */}
         <h3 className="mb-4 text-2xl font-bold text-slate-900">{title}</h3>
@@ -144,15 +146,8 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
           </h4>
           <ul className="space-y-3" role="list">
             {solution.map((item, idx) => (
-              <motion.li
+              <li
                 key={idx}
-                initial={prefersReducedMotion ? {} : { opacity: 0, x: -20 }}
-                whileInView={prefersReducedMotion ? {} : { opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: prefersReducedMotion ? 0 : 0.4,
-                  delay: prefersReducedMotion ? 0 : index * 0.15 + 0.3 + idx * 0.1,
-                }}
                 className="flex items-start gap-3"
               >
                 <div
@@ -161,7 +156,7 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
                   <Check className={`h-4 w-4 ${colors.checkText}`} strokeWidth={3} aria-hidden="true" />
                 </div>
                 <span className="text-slate-700">{item}</span>
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>
@@ -180,12 +175,13 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
         aria-hidden="true"
         className={`absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-0 blur-3xl transition-all duration-500 group-hover:opacity-30 ${colors.bg}`}
       />
-    </motion.article>
+    </article>
   );
 };
 
 export const UseCasesSection: FC = () => {
-  const prefersReducedMotion = useReducedMotion();
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
 
   // Parallax effects for background decorative elements
   const bgParallax1 = useParallax({ speed: 0.25, enableOnMobile: false });
@@ -232,25 +228,27 @@ export const UseCasesSection: FC = () => {
       <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <motion.h2
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+          <h2
+            ref={headingRef}
             id="use-cases-heading"
-            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+            className={cn(
+              'mb-4 text-4xl font-bold text-slate-900 md:text-5xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             {USE_CASES_SECTION.heading}
-          </motion.h2>
-          <motion.p
-            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
-            whileInView={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.6, delay: prefersReducedMotion ? 0 : 0.1 }}
-            className="mx-auto max-w-3xl text-xl text-slate-600"
+          </h2>
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mx-auto max-w-3xl text-xl text-slate-600',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             {USE_CASES_SECTION.subheading}
-          </motion.p>
+          </p>
         </div>
 
         {/* Use Cases Grid */}

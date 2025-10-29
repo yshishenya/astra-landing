@@ -2,10 +2,11 @@
 
 import { type FC } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { Users, Clock, DollarSign, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PAIN_POINTS } from '@/lib/constants';
+import { useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 interface PainCardProps {
   icon: React.ReactNode;
@@ -28,28 +29,38 @@ const PainCard: FC<PainCardProps> = ({
   ctaText,
   index,
 }) => {
+  const { ref: cardRef, isInView: cardInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: iconRef, isInView: iconInView } = useScrollTrigger({ threshold: 0.1 });
+
   // Animation: enter from left for even indices, right for odd
-  const direction = index % 2 === 0 ? -50 : 50;
+  const enterAnimation = index % 2 === 0 ? 'animate-fade-in-left' : 'animate-fade-in-right';
+
+  // Stagger delays: 0ms, 150ms, 300ms
+  const cardDelay = index === 0 ? '' : index === 1 ? 'animate-delay-150' : 'animate-delay-300';
+  const iconDelay = index === 0 ? 'animate-delay-200' : index === 1 ? 'animate-delay-350' : 'animate-delay-450';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: direction }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-      whileHover={{ y: -8 }}
-      className="group rounded-lg bg-white p-8 shadow-md transition-shadow hover:shadow-xl"
+    <div
+      ref={cardRef}
+      className={cn(
+        'group rounded-lg bg-white p-8 shadow-md transition-shadow hover:shadow-xl',
+        'hover-lift animate-on-scroll',
+        cardInView && enterAnimation,
+        cardInView && cardDelay
+      )}
     >
       {/* Icon */}
-      <motion.div
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: index * 0.15 + 0.2 }}
-        className="mb-6 flex justify-center"
+      <div
+        ref={iconRef}
+        className={cn(
+          'mb-6 flex justify-center',
+          'animate-on-scroll',
+          iconInView && 'animate-scale-in',
+          iconInView && iconDelay
+        )}
       >
         {icon}
-      </motion.div>
+      </div>
 
       {/* Stat and Title */}
       <div className="mb-4 text-center">
@@ -73,11 +84,14 @@ const PainCard: FC<PainCardProps> = ({
       >
         {ctaText} <ArrowRight className="h-5 w-5" aria-hidden="true" />
       </Link>
-    </motion.div>
+    </div>
   );
 };
 
 export const ProblemSection: FC = () => {
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+  const { ref: subheadingRef, isInView: subheadingInView } = useScrollTrigger({ threshold: 0.1 });
+
   const painCards = [
     {
       id: 'turnover',
@@ -116,26 +130,28 @@ export const ProblemSection: FC = () => {
       <div className="container-custom">
         {/* Section Header */}
         <div className="mb-16 text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6 }}
+          <h2
+            ref={headingRef}
             id="problem-heading"
-            className="mb-4 text-4xl font-bold text-slate-900 md:text-5xl"
+            className={cn(
+              'mb-4 text-4xl font-bold text-slate-900 md:text-5xl',
+              'animate-on-scroll',
+              headingInView && 'animate-fade-in-up'
+            )}
           >
             Почему Ваши Лучшие Люди Уходят
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="mx-auto max-w-3xl text-xl text-slate-600"
+          </h2>
+          <p
+            ref={subheadingRef}
+            className={cn(
+              'mx-auto max-w-3xl text-xl text-slate-600',
+              'animate-on-scroll',
+              subheadingInView && 'animate-fade-in-up animate-delay-100'
+            )}
           >
             HR-директора тратят сотни часов на карьерные запросы, но всё равно теряют
             топ-таланты. Вот почему.
-          </motion.p>
+          </p>
         </div>
 
         {/* Pain Cards Grid */}

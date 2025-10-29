@@ -1,6 +1,7 @@
 'use client';
 
 import { type FC } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { DemoForm } from './demo-form';
 import { ContactForm } from './contact-form';
@@ -56,8 +57,8 @@ export const HeroSection: FC = () => {
           className="h-full w-full object-cover opacity-20"
           poster="/images/screenshots/pdf-preview.svg"
         >
-          <source src="/videos/hero-demo-optimized.mp4" type="video/mp4" />
-          <source src="/videos/hero-demo-optimized.webm" type="video/webm" />
+          <source src="/videos/hero-demo-final.webm" type="video/webm" />
+          <source src="/videos/hero-demo-final.mp4" type="video/mp4" />
           {/* Fallback gradient background if video fails to load */}
         </video>
         {/* Dark overlay for text readability */}
@@ -79,18 +80,20 @@ export const HeroSection: FC = () => {
       </div>
 
       <div className="container-custom relative z-10">
-        <div className="flex min-h-[85vh] flex-col items-center justify-center text-center">
-          {/* Headline */}
-          <h1
-            id="hero-heading"
-            className="mb-6 font-display text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl"
-          >
-            {HERO_HEADLINES[0]}
-          </h1>
-          <p className="mb-10 max-w-3xl text-xl text-white/90 md:text-2xl">{HERO_SUBHEADLINE}</p>
+        <div className="grid min-h-[85vh] grid-cols-1 items-center gap-12 lg:grid-cols-2">
+          {/* Left: Text Content */}
+          <div className="flex flex-col justify-center text-center lg:text-left">
+            {/* Headline */}
+            <h1
+              id="hero-heading"
+              className="mb-6 font-display text-5xl font-bold leading-tight text-white md:text-6xl lg:text-7xl"
+            >
+              {HERO_HEADLINES[0]}
+            </h1>
+            <p className="mb-10 text-xl text-white/90 md:text-2xl">{HERO_SUBHEADLINE}</p>
 
-          {/* CTAs */}
-          <div className="mb-16 flex flex-col gap-4 sm:flex-row">
+            {/* CTAs */}
+            <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
             <DemoForm
               variant="primary"
               trigger={
@@ -121,21 +124,46 @@ export const HeroSection: FC = () => {
                 </Button>
               }
             />
+            </div>
+
+            {/* Stats with Glassmorphism */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="glass-card ai-glow-cyan p-6 text-center transition-all hover:scale-105">
+                <div className="text-4xl font-bold text-white md:text-5xl">{STATS.analysisTime}</div>
+                <div className="mt-2 text-sm text-white/80 md:text-base">{STATS_LABELS.analysisTime}</div>
+              </div>
+              <div className="glass-card ai-glow-blue p-6 text-center transition-all hover:scale-105">
+                <div className="text-4xl font-bold text-white md:text-5xl">{STATS.quality}</div>
+                <div className="mt-2 text-sm text-white/80 md:text-base">{STATS_LABELS.quality}</div>
+              </div>
+              <div className="glass-card ai-glow-purple p-6 text-center transition-all hover:scale-105">
+                <div className="text-4xl font-bold text-white md:text-5xl">{STATS.roi}</div>
+                <div className="mt-2 text-sm text-white/80 md:text-base">{STATS_LABELS.roi}</div>
+              </div>
+            </div>
           </div>
 
-          {/* Stats with Glassmorphism */}
-          <div className="grid w-full max-w-5xl grid-cols-1 gap-6 sm:grid-cols-3">
-            <div className="glass-card ai-glow-cyan p-8 text-center transition-all hover:scale-105">
-              <div className="text-5xl font-bold text-white">{STATS.analysisTime}</div>
-              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.analysisTime}</div>
-            </div>
-            <div className="glass-card ai-glow-blue p-8 text-center transition-all hover:scale-105">
-              <div className="text-5xl font-bold text-white">{STATS.quality}</div>
-              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.quality}</div>
-            </div>
-            <div className="glass-card ai-glow-purple p-8 text-center transition-all hover:scale-105">
-              <div className="text-5xl font-bold text-white">{STATS.roi}</div>
-              <div className="mt-3 text-lg text-white/80">{STATS_LABELS.roi}</div>
+          {/* Right: Astra Character Image */}
+          <div className="relative hidden lg:block">
+            <div className="relative">
+              {/* Glow effect behind image */}
+              <div className="absolute -inset-8 rounded-full bg-gradient-to-br from-cyan-400/30 via-blue-500/30 to-purple-600/30 blur-3xl" />
+
+              {/* Main Astra Image */}
+              <div className="relative">
+                <Image
+                  src="/astra.png"
+                  alt="Astra - AI-карьерный консультант"
+                  width={600}
+                  height={600}
+                  priority
+                  className="relative z-10 animate-float drop-shadow-2xl"
+                />
+
+                {/* Decorative elements */}
+                <div className="absolute -right-4 top-1/4 h-32 w-32 animate-pulse rounded-full bg-cyan-400/20 blur-2xl" />
+                <div className="absolute -left-4 bottom-1/4 h-32 w-32 animate-pulse rounded-full bg-purple-600/20 blur-2xl animation-delay-1000" />
+              </div>
             </div>
           </div>
         </div>

@@ -1,9 +1,10 @@
 'use client';
 
 import { type FC } from 'react';
-import { motion } from 'framer-motion';
 import { CheckCircle, Star, Users } from 'lucide-react';
 import { STATS } from '@/lib/constants';
+import { useScrollTrigger } from '@/hooks/use-parallax';
+import { cn } from '@/lib/utils';
 
 interface TrustStatProps {
   icon: React.ReactNode;
@@ -12,21 +13,30 @@ interface TrustStatProps {
 }
 
 const TrustStat: FC<TrustStatProps> = ({ icon, text, index }) => {
+  const { ref, isInView } = useScrollTrigger({ threshold: 0.1 });
+
+  // Map index to delay class
+  const delayClass = index === 0 ? 'animate-delay-100' : index === 1 ? 'animate-delay-200' : 'animate-delay-300';
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="flex items-center justify-center gap-2"
+    <div
+      ref={ref}
+      className={cn(
+        'flex items-center justify-center gap-2',
+        'animate-on-scroll',
+        isInView && 'animate-fade-in-up',
+        isInView && delayClass
+      )}
     >
       <div className="text-primary">{icon}</div>
       <span className="text-sm font-medium text-slate-700 md:text-base">{text}</span>
-    </motion.div>
+    </div>
   );
 };
 
 export const TrustBar: FC = () => {
+  const { ref: headingRef, isInView: headingInView } = useScrollTrigger({ threshold: 0.1 });
+
   const trustStats = [
     {
       id: 'companies',
@@ -51,16 +61,17 @@ export const TrustBar: FC = () => {
       className="border-y border-slate-200 bg-white py-12"
     >
       <div className="container-custom">
-        <motion.p
-          initial={{ opacity: 0, y: -10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5 }}
+        <p
+          ref={headingRef}
           id="trust-bar-heading"
-          className="mb-8 text-center text-sm uppercase tracking-wide text-slate-500"
+          className={cn(
+            'mb-8 text-center text-sm uppercase tracking-wide text-slate-500',
+            'animate-on-scroll',
+            headingInView && 'animate-fade-in-down'
+          )}
         >
           Доверяют лидеры российского бизнеса
-        </motion.p>
+        </p>
 
         {/* Trust Stats */}
         <div
