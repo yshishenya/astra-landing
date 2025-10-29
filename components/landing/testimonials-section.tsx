@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import { TESTIMONIALS, STATS, TESTIMONIALS_SECTION } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useParallax, useScrollTrigger } from '@/hooks/use-parallax';
 
 interface TestimonialCardProps {
   quote: string;
@@ -92,13 +93,35 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
 export const TestimonialsSection: FC = () => {
   const prefersReducedMotion = useReducedMotion();
 
+  // Parallax effects for background decorative elements
+  const bgParallax1 = useParallax({ speed: 0.15, enableOnMobile: false });
+  const bgParallax2 = useParallax({ speed: 0.35, enableOnMobile: false });
+
+  // Scroll-triggered animation for the entire section
+  const { ref: sectionRef, isInView } = useScrollTrigger({ threshold: 0.1, triggerOnce: true });
+
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
       aria-labelledby="testimonials-heading"
-      className="bg-white py-20"
+      className="relative overflow-hidden bg-white py-20"
     >
-      <div className="container-custom">
+      {/* Decorative Background Elements with Parallax */}
+      <div className="absolute inset-0 opacity-20" aria-hidden="true">
+        <div
+          ref={bgParallax1.ref}
+          className="absolute -left-20 top-40 h-80 w-80 rounded-full bg-gradient-to-br from-yellow-200 to-orange-200 blur-3xl"
+          style={{ transform: bgParallax1.transform }}
+        />
+        <div
+          ref={bgParallax2.ref}
+          className="absolute -right-20 bottom-40 h-80 w-80 rounded-full bg-gradient-to-br from-purple-200 to-pink-200 blur-3xl"
+          style={{ transform: bgParallax2.transform }}
+        />
+      </div>
+
+      <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
           <motion.h2

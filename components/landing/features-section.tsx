@@ -4,6 +4,7 @@ import { type FC } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Grid3x3, Users, Calendar, Star, Brain } from 'lucide-react';
 import { FEATURES } from '@/lib/constants';
+import { useParallax } from '@/hooks/use-parallax';
 
 type ColorTheme = 'green' | 'blue' | 'purple' | 'orange' | 'teal' | 'indigo';
 
@@ -108,13 +109,31 @@ const FEATURE_ICONS = [
 ] as const;
 
 export const FeaturesSection: FC = () => {
+  // Parallax effects for background decorative elements
+  const bgParallax1 = useParallax({ speed: 0.2, enableOnMobile: false });
+  const bgParallax2 = useParallax({ speed: 0.4, enableOnMobile: false });
+
   return (
     <section
       id="features"
       aria-labelledby="features-heading"
-      className="bg-slate-50 py-20"
+      className="relative overflow-hidden bg-slate-50 py-20"
     >
-      <div className="container-custom">
+      {/* Decorative Background Elements with Parallax */}
+      <div className="absolute inset-0 opacity-30" aria-hidden="true">
+        <div
+          ref={bgParallax1.ref}
+          className="absolute left-0 top-20 h-96 w-96 rounded-full bg-gradient-to-br from-blue-200 to-purple-200 blur-3xl"
+          style={{ transform: bgParallax1.transform }}
+        />
+        <div
+          ref={bgParallax2.ref}
+          className="absolute bottom-20 right-0 h-96 w-96 rounded-full bg-gradient-to-br from-teal-200 to-green-200 blur-3xl"
+          style={{ transform: bgParallax2.transform }}
+        />
+      </div>
+
+      <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
           <motion.h2

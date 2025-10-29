@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, Users, Building, UserPlus, Check } from 'lucide-react';
 import { USE_CASES, USE_CASES_SECTION } from '@/lib/constants';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { useParallax, useScrollTrigger } from '@/hooks/use-parallax';
 
 type ColorTheme = 'green' | 'blue' | 'purple' | 'orange';
 
@@ -186,6 +187,13 @@ const UseCaseCard: FC<UseCaseCardProps> = ({
 export const UseCasesSection: FC = () => {
   const prefersReducedMotion = useReducedMotion();
 
+  // Parallax effects for background decorative elements
+  const bgParallax1 = useParallax({ speed: 0.25, enableOnMobile: false });
+  const bgParallax2 = useParallax({ speed: 0.45, enableOnMobile: false });
+
+  // Scroll-triggered animation for the entire section
+  const { ref: sectionRef, isInView } = useScrollTrigger({ threshold: 0.1, triggerOnce: true });
+
   const iconComponents = {
     TrendingUp: TrendingUp,
     Users: Users,
@@ -202,11 +210,26 @@ export const UseCasesSection: FC = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="use-cases"
       aria-labelledby="use-cases-heading"
-      className="bg-slate-50 py-20"
+      className="relative overflow-hidden bg-slate-50 py-20"
     >
-      <div className="container-custom">
+      {/* Decorative Background Elements with Parallax */}
+      <div className="absolute inset-0 opacity-25" aria-hidden="true">
+        <div
+          ref={bgParallax1.ref}
+          className="absolute right-0 top-20 h-96 w-96 rounded-full bg-gradient-to-br from-indigo-200 to-blue-200 blur-3xl"
+          style={{ transform: bgParallax1.transform }}
+        />
+        <div
+          ref={bgParallax2.ref}
+          className="absolute bottom-20 left-0 h-96 w-96 rounded-full bg-gradient-to-br from-green-200 to-teal-200 blur-3xl"
+          style={{ transform: bgParallax2.transform }}
+        />
+      </div>
+
+      <div className="container-custom relative z-10">
         {/* Section Header */}
         <div className="mb-16 text-center">
           <motion.h2

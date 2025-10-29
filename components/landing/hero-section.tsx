@@ -6,6 +6,7 @@ import { DemoForm } from './demo-form';
 import { ContactForm } from './contact-form';
 import { HERO_HEADLINES, HERO_SUBHEADLINE, CTA_BUTTONS, STATS, STATS_LABELS } from '@/lib/constants';
 import { trackCTAClick } from '@/lib/analytics';
+import { useParallax } from '@/hooks/use-parallax';
 
 /**
  * Hero Section Component
@@ -24,6 +25,11 @@ import { trackCTAClick } from '@/lib/analytics';
  * ```
  */
 export const HeroSection: FC = () => {
+  // Parallax effects for background elements (different speeds create depth)
+  const videoParallax = useParallax({ speed: 0.1, enableOnMobile: false });
+  const gradientTopParallax = useParallax({ speed: 0.3, enableOnMobile: false });
+  const gradientBottomParallax = useParallax({ speed: 0.5, enableOnMobile: false });
+
   return (
     <section
       id="hero"
@@ -31,7 +37,12 @@ export const HeroSection: FC = () => {
       className="gradient-hero section-spacing relative overflow-hidden"
     >
       {/* Background Video */}
-      <div className="absolute inset-0 z-0" aria-hidden="true">
+      <div
+        ref={videoParallax.ref}
+        className="absolute inset-0 z-0"
+        aria-hidden="true"
+        style={{ transform: videoParallax.transform }}
+      >
         <video
           autoPlay
           loop
@@ -55,8 +66,16 @@ export const HeroSection: FC = () => {
 
       {/* AI Network Background Pattern */}
       <div className="absolute inset-0 z-0 opacity-20" aria-hidden="true">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.15)_0%,transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(37,99,235,0.15)_0%,transparent_50%)]" />
+        <div
+          ref={gradientTopParallax.ref}
+          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.15)_0%,transparent_50%)]"
+          style={{ transform: gradientTopParallax.transform }}
+        />
+        <div
+          ref={gradientBottomParallax.ref}
+          className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(37,99,235,0.15)_0%,transparent_50%)]"
+          style={{ transform: gradientBottomParallax.transform }}
+        />
       </div>
 
       <div className="container-custom relative z-10">
