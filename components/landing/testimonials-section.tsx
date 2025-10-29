@@ -90,6 +90,15 @@ const TestimonialCard: FC<TestimonialCardProps> = ({
   );
 };
 
+/**
+ * Renders the testimonials section with parallax effects and scroll-triggered animations.
+ *
+ * This component utilizes the useReducedMotion hook to adjust animations based on user preferences.
+ * It implements parallax effects for background elements and triggers animations when the section comes into view.
+ * The section includes a header, a stats bar, and a grid of testimonials rendered from the TESTIMONIALS array.
+ *
+ * @returns A JSX element representing the testimonials section.
+ */
 export const TestimonialsSection: FC = () => {
   const prefersReducedMotion = useReducedMotion();
 
