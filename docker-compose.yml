@@ -7,6 +7,15 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: production
+        # Pass NEXT_PUBLIC_* vars as build args (embedded at build time)
+        NEXT_PUBLIC_TAWK_PROPERTY_ID: ${NEXT_PUBLIC_TAWK_PROPERTY_ID}
+        NEXT_PUBLIC_TAWK_WIDGET_ID: ${NEXT_PUBLIC_TAWK_WIDGET_ID}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3001}
+        NEXT_PUBLIC_SITE_NAME: ${NEXT_PUBLIC_SITE_NAME:-Astra}
+        NEXT_PUBLIC_CONTACT_EMAIL: ${NEXT_PUBLIC_CONTACT_EMAIL}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID}
+        NEXT_PUBLIC_PLAUSIBLE_DOMAIN: ${NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+        NEXT_PUBLIC_HOTJAR_ID: ${NEXT_PUBLIC_HOTJAR_ID}
     container_name: astra-landing
     restart: unless-stopped
     ports:
@@ -25,6 +34,10 @@ services:
       - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID}
       - NEXT_PUBLIC_PLAUSIBLE_DOMAIN=${NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
       - NEXT_PUBLIC_HOTJAR_ID=${NEXT_PUBLIC_HOTJAR_ID}
+
+      # Tawk.to Live Chat (FREE)
+      - NEXT_PUBLIC_TAWK_PROPERTY_ID=${NEXT_PUBLIC_TAWK_PROPERTY_ID}
+      - NEXT_PUBLIC_TAWK_WIDGET_ID=${NEXT_PUBLIC_TAWK_WIDGET_ID}
 
       # Feature Flags (Optional)
       - NEXT_PUBLIC_ENABLE_CONTACT_FORM=${NEXT_PUBLIC_ENABLE_CONTACT_FORM:-true}
