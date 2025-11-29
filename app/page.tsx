@@ -3,7 +3,6 @@ import { Header } from '@/components/landing/header';
 import { Footer } from '@/components/landing/footer';
 import { HeroSection } from '@/components/landing/hero-section';
 import { TrustBar } from '@/components/landing/trust-bar';
-import { AboutAstraSection } from '@/components/landing/about-astra-section';
 import { ProblemSection } from '@/components/landing/problem-section';
 import { SolutionSection } from '@/components/landing/solution-section';
 import { FeaturesSection } from '@/components/landing/features-section';
@@ -35,9 +34,6 @@ export default function HomePage() {
 
         {/* Trust Bar */}
         <TrustBar />
-
-        {/* About Astra */}
-        <AboutAstraSection />
 
         {/* Problem Statement */}
         <ProblemSection />
