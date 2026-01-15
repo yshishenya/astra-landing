@@ -84,7 +84,7 @@ const CIRCULAR_PROGRESS_COLORS: Record<ColorTheme, string> = {
 } as const;
 
 /**
- * Circular progress indicator (radial progress bar)
+ * Renders a circular progress indicator (radial progress bar).
  */
 const CircularProgress: FC<CircularProgressProps> = ({
   percentage,
@@ -197,6 +197,19 @@ const Counter: FC<CounterProps> = ({ from, to, duration, suffix, inView }) => {
   );
 };
 
+/**
+ * Renders a metric card component with animated visuals.
+ *
+ * The MetricCard component displays a value with an optional suffix, a label, and a description. It utilizes motion effects for entrance and hover states, and includes a radial progress indicator. The component adapts to user preferences for reduced motion and handles visibility using the useInView hook.
+ *
+ * @param value - The numeric value to be displayed on the card.
+ * @param suffix - An optional suffix for the value, such as a percentage sign.
+ * @param label - The label text for the metric card.
+ * @param description - A description providing additional context for the metric.
+ * @param color - The color scheme to be applied to the card.
+ * @param index - The index of the card, used for animation delays.
+ * @returns A JSX element representing the metric card.
+ */
 const MetricCard: FC<MetricCardProps> = ({
   value,
   suffix,
