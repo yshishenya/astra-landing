@@ -211,16 +211,15 @@ const sanitizeProperties = (properties: EventProperties): EventProperties => {
 // ============================================================================
 
 /**
- * Track a generic event to all enabled analytics providers
+ * Track a generic event to all enabled analytics providers.
  *
- * @param eventName - Name of the event (e.g., 'page_view', 'button_click')
- * @param properties - Event properties (optional)
- * @param category - Event category for better organization (optional)
+ * This function sanitizes the event properties and logs the event to the console in development mode.
+ * It then attempts to send the event data to Google Analytics 4 and Plausible Analytics if they are enabled,
+ * handling any errors that may occur during the tracking process.
  *
- * @example
- * ```tsx
- * trackEvent('purchase', { value: 99.99, currency: 'RUB' }, 'conversion');
- * ```
+ * @param eventName - Name of the event (e.g., 'page_view', 'button_click').
+ * @param properties - Event properties (optional).
+ * @param category - Event category for better organization (optional).
  */
 export const trackEvent = (
   eventName: string,
@@ -434,14 +433,11 @@ export const getAnalyticsStatus = () => {
 };
 
 /**
- * Debug analytics configuration
+ * Logs the current analytics configuration status to the console.
  *
- * Logs current analytics status to console
- *
- * @example
- * ```tsx
- * debugAnalytics();
- * ```
+ * This function retrieves the analytics status using getAnalyticsStatus and logs various
+ * configuration details, including the environment, GA4 settings, and Plausible settings.
+ * It organizes the output in a console group for better readability.
  */
 export const debugAnalytics = (): void => {
   const status = getAnalyticsStatus();
