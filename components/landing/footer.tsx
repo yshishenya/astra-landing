@@ -3,6 +3,9 @@ import Image from 'next/image';
 import { Mail, Linkedin, Twitter, Github } from 'lucide-react';
 import { APP_CONFIG } from '@/lib/constants';
 
+/**
+ * Renders the footer component with links to products, resources, company information, and legal documents.
+ */
 export function Footer() {
   const footerLinks = {
     product: [
